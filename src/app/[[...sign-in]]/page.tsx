@@ -1,148 +1,32 @@
-"use client";
+import Link from "next/link";
 
-import Image from "next/image";
-import { useRouter } from "next/navigation";
-import { useEffect } from "react";
+import { getSessionRole } from "@/lib/devAuth";
 
-import * as Clerk from "@clerk/elements/common";
-import * as SignIn from "@clerk/elements/sign-in";
-import { useUser } from "@clerk/nextjs";
-
-const LoginPage = () => {
-  const { isLoaded, isSignedIn, user } = useUser();
-
-  const router = useRouter();
-
-  useEffect(() => {
-    const role = user?.publicMetadata.role;
-
-    if (role) {
-      router.push(`/${role}`);
-    }
-  }, [user, router]);
+export default function DevAuthInfoPage() {
+  const role = getSessionRole();
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-plSkyLight to-white p-4">
-      <SignIn.Root>
-        <SignIn.Step
-          name="start"
-          className="
-            bg-white 
-            w-full 
-            max-w-md 
-            p-8 
-            md:p-12 
-            rounded-2xl 
-            shadow-2xl 
-            transform 
-            transition-all 
-            duration-300 
-            hover:scale-105 
-            hover:shadow-3xl 
-            border 
-            border-gray-100 
-            flex 
-            flex-col 
-            gap-4
-            animate-fade-in-up
-            opacity-0
-            delay-200
-          "
-        >
-          <div className="flex flex-col items-center justify-center mb-4 w-full">
-            <div className="flex items-center justify-center space-x-3 mb-1">
-              <Image 
-                src="/logo.png" 
-                alt="EduSphere Logo" 
-                width={48} 
-                height={48} 
-              />
-              <div className="flex flex-col items-center">
-                <h1 className="text-xl font-bold text-gray-800">EduSphere</h1>
-                <span className="text-xs text-gray-500">Empowering Education</span>
-              </div>
-            </div>
-          </div>
-          
-          <h2 className="text-sm text-center text-gray-500 mb-4">
-            Sign in to your account
-          </h2>
-          
-          <Clerk.GlobalError className="text-sm text-red-400 text-center mb-4" />
-          
-          <div className="space-y-4">
-            <Clerk.Field name="identifier" className="flex flex-col gap-2">
-              <Clerk.Label className="text-sm text-gray-600">
-                Username
-              </Clerk.Label>
-              <Clerk.Input
-                type="text"
-                required
-                className="
-                  w-full 
-                  p-3 
-                  rounded-lg 
-                  border 
-                  border-gray-300 
-                  focus:outline-none 
-                  focus:ring-2 
-                  focus:ring-blue-500 
-                  transition-all 
-                  duration-300
-                "
-              />
-              <Clerk.FieldError className="text-xs text-red-400" />
-            </Clerk.Field>
-            
-            <Clerk.Field name="password" className="flex flex-col gap-2">
-              <Clerk.Label className="text-sm text-gray-600">
-                Password
-              </Clerk.Label>
-              <Clerk.Input
-                type="password"
-                required
-                className="
-                  w-full 
-                  p-3 
-                  rounded-lg 
-                  border 
-                  border-gray-300 
-                  focus:outline-none 
-                  focus:ring-2 
-                  focus:ring-blue-500 
-                  transition-all 
-                  duration-300
-                "
-              />
-              <Clerk.FieldError className="text-xs text-red-400" />
-            </Clerk.Field>
-          </div>
-          
-          <SignIn.Action
-            submit
-            className="
-              w-full 
-              bg-blue-500 
-              text-white 
-              py-3 
-              rounded-lg 
-              mt-6 
-              font-semibold 
-              hover:bg-blue-600 
-              transition-colors 
-              duration-300 
-              ease-in-out 
-              transform 
-              hover:scale-[1.02] 
-              active:scale-[0.98]
-            "
-          >
-            Sign In
-          </SignIn.Action>
-        </SignIn.Step>
-      </SignIn.Root>
+    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-plSkyLight to-white p-8">
+      <div className="max-w-xl w-full bg-white rounded-2xl shadow-xl p-10 space-y-6 text-center">
+        <h1 className="text-2xl font-semibold text-gray-800">Local Access Enabled</h1>
+        <p className="text-sm text-gray-600 leading-6">
+          Clerk authentication is disabled in this development build. All routes are accessible
+          without signing in. The current mock role is <span className="font-semibold">{role}</span>.
+        </p>
+        <p className="text-sm text-gray-600 leading-6">
+          To explore the dashboard as another role, set <code className="px-2 py-1 bg-gray-100 rounded">DEV_ROLE</code>
+          in <code className="px-2 py-1 bg-gray-100 rounded">.env.local</code> (e.g. <code className="px-2 py-1 bg-gray-100 rounded">DEV_ROLE=teacher</code>)
+          and restart the dev server.
+        </p>
+        <div className="flex flex-wrap gap-3 justify-center text-sm">
+          <Link href="/admin" className="px-4 py-2 rounded-md bg-plSky text-white">
+            Go to Admin Dashboard
+          </Link>
+          <Link href="/list/teachers" className="px-4 py-2 rounded-md bg-plPurple text-white">
+            Browse Lists
+          </Link>
+        </div>
+      </div>
     </div>
   );
-};
-
-export default LoginPage;
+}

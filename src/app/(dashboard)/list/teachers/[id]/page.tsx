@@ -9,7 +9,7 @@ import FormContainer from "@/components/FormContainer";
 import Performance from "@/components/Performance";
 
 import prisma from "@/lib/prisma";
-import { auth } from "@clerk/nextjs/server";
+import { getSessionRole } from "@/lib/devAuth";
 import { Teacher } from "@prisma/client";
 
 const SingleTeacherPage = async ({
@@ -17,8 +17,7 @@ const SingleTeacherPage = async ({
 }: {
   params: { id: string };
 }) => {
-  const { sessionClaims } = auth();
-  const role = (sessionClaims?.metadata as { role?: string })?.role;
+  const role = getSessionRole();
 
   const teacher:
     | (Teacher & {

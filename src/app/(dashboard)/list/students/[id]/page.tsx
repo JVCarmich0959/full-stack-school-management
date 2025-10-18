@@ -10,7 +10,7 @@ import Performance from "@/components/Performance";
 import StudentAttendanceCard from "@/components/StudentAttendanceCard";
 
 import prisma from "@/lib/prisma";
-import { auth } from "@clerk/nextjs/server";
+import { getSessionRole } from "@/lib/devAuth";
 import { Class, Student } from "@prisma/client";
 
 const SingleStudentPage = async ({
@@ -18,8 +18,7 @@ const SingleStudentPage = async ({
 }: {
   params: { id: string };
 }) => {
-  const { sessionClaims } = auth();
-  const role = (sessionClaims?.metadata as { role?: string })?.role;
+  const role = getSessionRole();
 
   const student:
     | (Student & {
