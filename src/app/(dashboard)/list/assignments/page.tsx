@@ -1,4 +1,5 @@
 import Image from "next/image";
+import { redirect } from "next/navigation";
 
 import FormModal from "@/components/FormModal";
 import Pagination from "@/components/Pagination";
@@ -13,52 +14,31 @@ import { auth } from "@clerk/nextjs/server";
 
 type AssignmentList = Assignment & {
   lesson: {
-    subject: Subject;
-    class: Class;
-    teacher: Teacher;
+    subject: Pick<Subject, "name">;
+    class: Pick<Class, "name">;
+    teacher: Pick<Teacher, "name" | "surname">;
   };
 };
 
-const AssignmentListPage = async ({
-  searchParams,
-}: {
-  searchParams: { [key: string]: string | undefined };
-}) => {
+type PageProps = {
+  searchParams: Record<string, string | string[] | undefined>;
+};
 
+const AssignmentListPage = async ({ searchParams }: PageProps) => {
   const { userId, sessionClaims } = auth();
-  const role = (sessionClaims?.metadata as { role?: string })?.role;
-  const currentUserId = userId;
-  
-  
+  if (!userId) redirect("/sign-in");
+
+  const role =
+    (sessionClaims?.metadata as { role?: "admin" | "teacher" | "student" | "parent" })?.role ?? "student";
+
   const columns = [
-    {
-      header: "Subject Name",
-      accessor: "name",
-    },
-    {
-      header: "Class",
-      accessor: "class",
-    },
-    {
-      header: "Teacher",
-      accessor: "teacher",
-      className: "hidden md:table-cell",
-    },
-    {
-      header: "Due Date",
-      accessor: "dueDate",
-      className: "hidden md:table-cell",
-    },
-    ...(role === "admin" || role === "teacher"
-      ? [
-          {
-            header: "Actions",
-            accessor: "action",
-          },
-        ]
-      : []),
+    { header: "Subject Name", accessor: "name" },
+    { header: "Class", accessor: "class" },
+    { header: "Teacher", accessor: "teacher", className: "hidden md:table-cell" },
+    { header: "Due Date", accessor: "dueDate", className: "hidden md:table-cell" },
+    ...(role === "admin" || role === "teacher" ? [{ header: "Actions", accessor: "action" as const }] : []),
   ];
-  
+
   const renderRow = (item: AssignmentList) => (
     <tr
       key={item.id}
@@ -67,83 +47,58 @@ const AssignmentListPage = async ({
       <td className="flex items-center gap-4 p-4">{item.lesson.subject.name}</td>
       <td>{item.lesson.class.name}</td>
       <td className="hidden md:table-cell">
-        {item.lesson.teacher.name + " " + item.lesson.teacher.surname}
+        {`${item.lesson.teacher.name} ${item.lesson.teacher.surname}`}
       </td>
       <td className="hidden md:table-cell">
-        {new Intl.DateTimeFormat("en-US").format(item.dueDate)}
+        {item.dueDate
+          ? new Intl.DateTimeFormat("en-US", { dateStyle: "medium" }).format(item.dueDate)
+          : "—"}
       </td>
-      <td>
-        <div className="flex items-center gap-2">
-          {(role === "admin" || role === "teacher") && (
-            <>
-              <FormModal table="assignment" type="update" data={item} />
-              <FormModal table="assignment" type="delete" id={item.id} />
-            </>
-          )}
-        </div>
-      </td>
+      {(role === "admin" || role === "teacher") && (
+        <td>
+          <div className="flex items-center gap-2">
+            <FormModal table="assignment" type="update" data={item} />
+            <FormModal table="assignment" type="delete" id={item.id} />
+          </div>
+        </td>
+      )}
     </tr>
   );
 
-  const { page, ...queryParams } = searchParams;
+  // Pagination parsing (safe)
+  const rawPage = Array.isArray(searchParams.page) ? searchParams.page[0] : searchParams.page;
+  const p = Math.max(1, Number.isFinite(Number(rawPage)) ? parseInt(String(rawPage), 10) : 1);
 
-  const p = page ? parseInt(page) : 1;
+  // WHERE
+  const query: Prisma.AssignmentWhereInput = { lesson: {} };
 
-  // URL PARAMS CONDITION
+  // Filters
+  const qp = searchParams;
+  const classId = Array.isArray(qp.classId) ? qp.classId[0] : qp.classId;
+  const teacherId = Array.isArray(qp.teacherId) ? qp.teacherId[0] : qp.teacherId;
+  const search = Array.isArray(qp.search) ? qp.search[0] : qp.search;
 
-  const query: Prisma.AssignmentWhereInput = {};
-
-  query.lesson = {};
-
-  if (queryParams) {
-    for (const [key, value] of Object.entries(queryParams)) {
-      if (value !== undefined) {
-        switch (key) {
-          case "classId":
-            query.lesson.classId = parseInt(value);
-            break;
-          case "teacherId":
-            query.lesson.teacherId = value;
-            break;
-          case "search":
-            query.lesson.subject = {
-              name: { contains: value, mode: "insensitive" },
-            };
-            break;
-          default:
-            break;
-        }
-      }
-    }
+  if (classId) {
+    const cid = parseInt(classId, 10);
+    if (Number.isFinite(cid)) query.lesson!.classId = cid;
+  }
+  if (teacherId) query.lesson!.teacherId = teacherId;
+  if (search) {
+    query.lesson!.subject = { name: { contains: search, mode: "insensitive" } };
   }
 
-  // ROLE CONDITIONS
-
+  // Role scoping
   switch (role) {
     case "admin":
       break;
     case "teacher":
-      query.lesson.teacherId = currentUserId!;
+      query.lesson!.teacherId = userId;
       break;
     case "student":
-      query.lesson.class = {
-        students: {
-          some: {
-            id: currentUserId!,
-          },
-        },
-      };
+      query.lesson!.class = { students: { some: { id: userId } } };
       break;
     case "parent":
-      query.lesson.class = {
-        students: {
-          some: {
-            parentId: currentUserId!,
-          },
-        },
-      };
-      break;
-    default:
+      query.lesson!.class = { students: { some: { parentId: userId } } };
       break;
   }
 
@@ -159,36 +114,41 @@ const AssignmentListPage = async ({
           },
         },
       },
+      orderBy: [{ dueDate: "desc" }, { createdAt: "desc" }], // stable pagination
       take: ITEM_PER_PAGE,
       skip: ITEM_PER_PAGE * (p - 1),
     }),
     prisma.assignment.count({ where: query }),
   ]);
+
   return (
     <div className="bg-white p-4 rounded-md flex-1 m-4 mt-0">
       {/* TOP */}
       <div className="flex items-center justify-between">
-        <h1 className="hidden md:block text-lg font-semibold">
-          All Assignments
-        </h1>
+        <h1 className="hidden md:block text-lg font-semibold">All Assignments</h1>
         <div className="flex flex-col md:flex-row items-center gap-4 w-full md:w-auto">
           <TableSearch />
           <div className="flex items-center gap-4 self-end">
-            <button className="w-8 h-8 flex items-center justify-center rounded-full bg-plYellow">
+            <button className="w-8 h-8 flex items-center justify-center rounded-full bg-plYellow" aria-label="Filter">
               <Image src="/filter.png" alt="" width={14} height={14} />
             </button>
-            <button className="w-8 h-8 flex items-center justify-center rounded-full bg-plYellow">
+            <button className="w-8 h-8 flex items-center justify-center rounded-full bg-plYellow" aria-label="Sort">
               <Image src="/sort.png" alt="" width={14} height={14} />
             </button>
-            {role === "admin" ||
-              (role === "teacher" && (
-                <FormModal table="assignment" type="create" />
-              ))}
+            {(role === "admin" || role === "teacher") && (
+              <FormModal table="assignment" type="create" />
+            )}
           </div>
         </div>
       </div>
+
       {/* LIST */}
-      <Table columns={columns} renderRow={renderRow} data={data} />
+      {data.length ? (
+        <Table columns={columns} renderRow={renderRow} data={data} />
+      ) : (
+        <div className="text-sm text-gray-500 p-8 text-center">No assignments match your filters.</div>
+      )}
+
       {/* PAGINATION */}
       <Pagination page={p} count={count} />
     </div>

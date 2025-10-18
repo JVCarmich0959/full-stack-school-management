@@ -1,47 +1,55 @@
+// app/(admin)/page.tsx
+import type { FC } from "react";
+import dynamic from "next/dynamic";
 import Announcements from "@/components/Announcements";
-import AttendanceChartContainer from "@/components/AttendanceChartContainer";
-import CountChartContainer from "@/components/CountChartContainer";
 import EventCalendarContainer from "@/components/EventCalendarContainer";
-import FinanceChart from "@/components/FinanceChart";
 import UserCard from "@/components/UserCard";
 
-const AdminPage = ({
-  searchParams,
-}: {
-  searchParams: { [keys: string]: string | undefined };
-}) => {
+// Defer heavy charts to client, no SSR to prevent hydration mismatch
+const CountChartContainer = dynamic(() => import("@/components/CountChartContainer"), { ssr: false, loading: () => <div className="h-64 rounded-2xl bg-muted animate-pulse" /> });
+const AttendanceChartContainer = dynamic(() => import("@/components/AttendanceChartContainer"), { ssr: false, loading: () => <div className="h-64 rounded-2xl bg-muted animate-pulse" /> });
+const FinanceChart = dynamic(() => import("@/components/FinanceChart"), { ssr: false, loading: () => <div className="h-72 rounded-2xl bg-muted animate-pulse" /> });
+
+type AdminPageProps = {
+  searchParams: Record<string, string | string[] | undefined>;
+};
+
+const AdminPage: FC<AdminPageProps> = ({ searchParams }) => {
   return (
-    <div className="p-4 flex gap-4 flex-col md:flex-row">
-      {/* LEFT */}
-      <div className="w-full lg:w-2/3 flex flex-col gap-8">
+    <div className="p-4 lg:p-6 grid gap-6 lg:gap-8 lg:grid-cols-3" role="main" aria-labelledby="dashboard-title">
+      {/* LEFT (spans 2 cols on large) */}
+      <section className="lg:col-span-2 grid gap-6" aria-label="Overview and analytics">
+        <h1 id="dashboard-title" className="sr-only">Admin Dashboard</h1>
+
         {/* USER CARDS */}
-        <div className="flex gap-4 justify-between flex-wrap">
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
           <UserCard type="admin" />
           <UserCard type="teacher" />
           <UserCard type="student" />
           <UserCard type="parent" />
         </div>
+
         {/* MIDDLE CHARTS */}
-        <div className="flex gap-4 flex-col lg:flex-row">
-          {/* COUNT CHART */}
-          <div className="w-full lg:w-1/3 h-[450px]">
+        <div className="grid lg:grid-cols-3 gap-4">
+          <div className="lg:col-span-1 min-h-[clamp(280px,40vh,420px)]">
             <CountChartContainer />
           </div>
-          {/* ATTENDANCE CHART */}
-          <div className="w-full lg:w-2/3 h-[450px]">
+          <div className="lg:col-span-2 min-h-[clamp(280px,40vh,420px)]">
             <AttendanceChartContainer />
           </div>
         </div>
+
         {/* BOTTOM CHART */}
-        <div className="w-full h-[500px]">
+        <div className="min-h-[clamp(320px,45vh,520px)]">
           <FinanceChart />
         </div>
-      </div>
-      {/* RIGHT */}
-      <div className="w-full lg:w-1/3 flex flex-col gap-8">
-        <EventCalendarContainer searchParams={searchParams}/>
+      </section>
+
+      {/* RIGHT RAIL */}
+      <aside className="flex flex-col gap-6" aria-label="Calendar and announcements">
+        <EventCalendarContainer searchParams={searchParams} />
         <Announcements />
-      </div>
+      </aside>
     </div>
   );
 };
