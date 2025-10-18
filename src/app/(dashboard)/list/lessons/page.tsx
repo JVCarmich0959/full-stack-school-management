@@ -1,11 +1,10 @@
 import Image from "next/image";
-import { auth } from "@clerk/nextjs/server";
-
 import FormContainer from "@/components/FormContainer";
 import Pagination from "@/components/Pagination";
 import Table from "@/components/Table";
 import TableSearch from "@/components/TableSearch";
 
+import { getSessionRole } from "@/lib/devAuth";
 import prisma from "@/lib/prisma";
 import { ITEM_PER_PAGE } from "@/lib/settings";
 import { Class, Lesson, Prisma, Subject, Teacher } from "@prisma/client";
@@ -21,8 +20,7 @@ const LessonListPage = async ({
   searchParams: { [key: string]: string | undefined };
 }) => {
 
-const { sessionClaims } = auth();
-const role = (sessionClaims?.metadata as { role?: string })?.role;
+const role = getSessionRole();
 
 
 const columns = [

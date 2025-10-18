@@ -1,6 +1,5 @@
 import type { Metadata } from "next";
 import { Plus_Jakarta_Sans } from "next/font/google";
-import { ClerkProvider } from "@clerk/nextjs";
 
 import { ToastContainer } from "react-toastify";
 
@@ -20,12 +19,11 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <ClerkProvider>
-      <html lang="en">
-        <body className={jakarta.className}>
-          {children} <ToastContainer position="bottom-right" theme="dark" />
-        </body>
-      </html>
-    </ClerkProvider>
+    <html lang="en">
+      <body className={jakarta.className}>
+        {children}
+        <ToastContainer position="bottom-right" theme="dark" />
+      </body>
+    </html>
   );
 }

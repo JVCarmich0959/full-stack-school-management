@@ -1,16 +1,15 @@
 import Image from "next/image";
-import { redirect } from "next/navigation";
 
 import FormModal from "@/components/FormModal";
 import Pagination from "@/components/Pagination";
 import Table from "@/components/Table";
 import TableSearch from "@/components/TableSearch";
 
+import { DEV_USER_ID, getSessionRole } from "@/lib/devAuth";
 import prisma from "@/lib/prisma";
 import { ITEM_PER_PAGE } from "@/lib/settings";
 
 import { Assignment, Class, Prisma, Subject, Teacher } from "@prisma/client";
-import { auth } from "@clerk/nextjs/server";
 
 type AssignmentList = Assignment & {
   lesson: {
@@ -25,11 +24,8 @@ type PageProps = {
 };
 
 const AssignmentListPage = async ({ searchParams }: PageProps) => {
-  const { userId, sessionClaims } = auth();
-  if (!userId) redirect("/sign-in");
-
-  const role =
-    (sessionClaims?.metadata as { role?: "admin" | "teacher" | "student" | "parent" })?.role ?? "student";
+  const role = getSessionRole();
+  const userId = DEV_USER_ID;
 
   const columns = [
     { header: "Subject Name", accessor: "name" },
