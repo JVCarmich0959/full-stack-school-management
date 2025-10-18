@@ -5,10 +5,10 @@ import Pagination from "@/components/Pagination";
 import Table from "@/components/Table";
 import TableSearch from "@/components/TableSearch";
 
+import { DEV_USER_ID, getSessionRole } from "@/lib/devAuth";
 import prisma from "@/lib/prisma";
 import { ITEM_PER_PAGE } from "@/lib/settings";
 
-import { auth } from "@clerk/nextjs/server";
 import { Class, Exam, Prisma, Subject, Teacher } from "@prisma/client";
 
 type ExamList = Exam & {
@@ -25,9 +25,8 @@ const ExamListPage = async ({
   searchParams: { [key: string]: string | undefined };
 }) => {
 
-const { userId, sessionClaims } = auth();
-const role = (sessionClaims?.metadata as { role?: string })?.role;
-const currentUserId = userId;
+const role = getSessionRole();
+const currentUserId = DEV_USER_ID;
 
 
 const columns = [
@@ -122,13 +121,13 @@ const renderRow = (item: ExamList) => (
     case "admin":
       break;
     case "teacher":
-      query.lesson.teacherId = currentUserId!;
+      query.lesson.teacherId = currentUserId;
       break;
     case "student":
       query.lesson.class = {
         students: {
           some: {
-            id: currentUserId!,
+            id: currentUserId,
           },
         },
       };
@@ -137,7 +136,7 @@ const renderRow = (item: ExamList) => (
       query.lesson.class = {
         students: {
           some: {
-            parentId: currentUserId!,
+            parentId: currentUserId,
           },
         },
       };
