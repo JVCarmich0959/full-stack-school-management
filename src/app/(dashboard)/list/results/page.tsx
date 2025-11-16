@@ -5,12 +5,11 @@ import Pagination from "@/components/Pagination";
 import Table from "@/components/Table";
 import TableSearch from "@/components/TableSearch";
 
+import { DEV_USER_ID, getSessionRole } from "@/lib/devAuth";
 import prisma from "@/lib/prisma";
 import { ITEM_PER_PAGE } from "@/lib/settings";
 
 import { Prisma } from "@prisma/client";
-
-import { auth } from "@clerk/nextjs/server";
 
 type ResultList = {
   id: number;
@@ -31,9 +30,8 @@ const ResultListPage = async ({
   searchParams: { [key: string]: string | undefined };
 }) => {
 
-const { userId, sessionClaims } = auth();
-const role = (sessionClaims?.metadata as { role?: string })?.role;
-const currentUserId = userId;
+const role = getSessionRole();
+const currentUserId = DEV_USER_ID;
 
 
 const columns = [
@@ -81,7 +79,7 @@ const renderRow = (item: ResultList) => (
     className="border-b border-gray-200 even:bg-slate-50 text-sm hover:bg-plPurpleLight"
   >
     <td className="flex items-center gap-4 p-4">{item.title}</td>
-    <td>{item.studentName + " " + item.studentName}</td>
+    <td>{item.studentName + " " + item.studentSurname}</td>
     <td className="hidden md:table-cell">{item.score}</td>
     <td className="hidden md:table-cell">
       {item.teacherName + " " + item.teacherSurname}
@@ -138,18 +136,18 @@ const renderRow = (item: ResultList) => (
       break;
     case "teacher":
       query.OR = [
-        { exam: { lesson: { teacherId: currentUserId! } } },
-        { assignment: { lesson: { teacherId: currentUserId! } } },
+        { exam: { lesson: { teacherId: currentUserId } } },
+        { assignment: { lesson: { teacherId: currentUserId } } },
       ];
       break;
 
     case "student":
-      query.studentId = currentUserId!;
+      query.studentId = currentUserId;
       break;
 
     case "parent":
       query.student = {
-        parentId: currentUserId!,
+        parentId: currentUserId,
       };
       break;
     default:
