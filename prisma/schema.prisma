@@ -33,6 +33,23 @@ model Student {
   attendances Attendance[]
   results     Result[]
   birthday    DateTime
+
+  // --- New fields for WSA digital access / eSpark lookups ---
+  fullNameLower  String        // e.g. "jaxon anderson" for search
+
+  cleverId       String        @unique   // student_Clever_ID from Clever
+  testingId      String?       @unique   // Student_testing_ID (can be null / missing)
+
+  esparkUsername String?                  // eSpark_Username from the sheet
+  esparkPassword String?                  // eSpark_Password from the sheet
+  hasEsparkCreds Boolean       @default(false)
+
+  // Optional parent contact fields copied directly from my roster file
+  guardianName   String?
+  guardianEmail  String?
+  guardianPhone  String?
+
+  @@index([fullNameLower])
 }
 
 model Teacher {
@@ -51,6 +68,11 @@ model Teacher {
   lessons   Lesson[]
   classes   Class[]
   birthday  DateTime
+
+  // New: short, displayable teacher name (e.g. "Fortner", "Ms. Helms")
+  shortName String?
+
+  @@index([shortName])
 }
 
 model Parent {
@@ -59,7 +81,7 @@ model Parent {
   name      String
   surname   String
   email     String?   @unique
-  phone     String    @unique
+  phone     String?
   address   String
   createdAt DateTime  @default(now())
   students  Student[]

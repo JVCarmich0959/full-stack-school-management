@@ -1,10 +1,9 @@
 import Image from "next/image";
 
-import { UserButton } from "@clerk/nextjs";
-import { currentUser } from "@clerk/nextjs/server";
+import { getSessionRole } from "@/lib/devAuth";
 
-const Navbar = async () => {
-  const user = await currentUser();
+const Navbar = () => {
+  const role = getSessionRole();
   return (
     <div className="flex items-center justify-between p-4">
       {/* Search Bar */}
@@ -29,11 +28,8 @@ const Navbar = async () => {
         </div>
         <div className="flex flex-col">
           <span className="text-xs leading-3 font-medium">John Doe</span>
-          <span className="text-[10px] text-gray-500 text-right">
-            {user?.publicMetadata?.role as string}
-          </span>
+          <span className="text-[10px] text-gray-500 text-right">{role}</span>
         </div>
-        <UserButton />
       </div>
     </div>
   );
