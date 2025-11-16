@@ -247,6 +247,7 @@ export const createStudent = async (
     }
 
     const studentId = data.id ?? randomUUID();
+<<<<<<< HEAD
     const gradeLevelFromGrade = await prisma.grade.findUnique({
       where: { id: data.gradeId },
       select: { level: true },
@@ -267,6 +268,8 @@ export const createStudent = async (
     const gradeLevel =
       data.gradeLevel ?? gradeLevelFromGrade?.level ?? 0;
 
+=======
+>>>>>>> main
     await prisma.student.create({
       data: {
         id: studentId,
@@ -315,6 +318,7 @@ export const updateStudent = async (
     return { success: false, error: true };
   }
   try {
+<<<<<<< HEAD
     const existingStudent = await prisma.student.findUnique({
       where: { id: data.id },
       select: {
@@ -367,6 +371,8 @@ export const updateStudent = async (
     const gradeLevel =
       data.gradeLevel ?? gradeLevelFromGrade?.level ?? existingStudent.gradeLevel;
 
+=======
+>>>>>>> main
     await prisma.student.update({
       where: {
         id: data.id,

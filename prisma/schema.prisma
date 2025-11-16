@@ -37,6 +37,7 @@ model Student {
   birthday    DateTime
 
   // --- New fields for WSA digital access / eSpark lookups ---
+<<<<<<< HEAD
   fullNameLower String // e.g. "jaxon anderson" for search
   gradeLevel    Int
 
@@ -52,6 +53,21 @@ model Student {
   guardianEmail String?
   guardianPhone String?
   homeroom      String?
+=======
+  fullNameLower  String        // e.g. "jaxon anderson" for search
+
+  cleverId       String        @unique   // student_Clever_ID from Clever
+  testingId      String?       @unique   // Student_testing_ID (can be null / missing)
+
+  esparkUsername String?                  // eSpark_Username from the sheet
+  esparkPassword String?                  // eSpark_Password from the sheet
+  hasEsparkCreds Boolean       @default(false)
+
+  // Optional parent contact fields copied directly from my roster file
+  guardianName   String?
+  guardianEmail  String?
+  guardianPhone  String?
+>>>>>>> main
 
   @@index([fullNameLower])
 }
