@@ -74,6 +74,15 @@ export const studentSchema = z.object({
   gradeId: z.coerce.number().min(1, { message: "Grade is required!" }),
   classId: z.coerce.number().min(1, { message: "Class is required!" }),
   parentId: z.string().min(1, { message: "Parent Id is required!" }),
+  gradeLevel: z.coerce.number().optional(),
+  cleverId: z.string().optional(),
+  testingId: z.string().optional(),
+  esparkUsername: z.string().optional(),
+  esparkPassword: z.string().optional(),
+  guardianName: z.string().optional(),
+  guardianEmail: z.string().optional(),
+  guardianPhone: z.string().optional(),
+  homeroom: z.string().optional(),
 });
 
 export type StudentSchema = z.infer<typeof studentSchema>;

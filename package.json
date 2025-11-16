@@ -39,7 +39,7 @@
     "typescript": "^5"
   },
   "prisma": {
-    "seed": "ts-node --compiler-options {\"module\":\"CommonJS\"} prisma/seed.ts"
+    "seed": "ts-node --compiler-options {\"module\":\"CommonJS\",\"target\":\"es2015\",\"downlevelIteration\":true} prisma/seed.ts"
   },
   "trustedDependencies": [
     "@clerk/shared"
