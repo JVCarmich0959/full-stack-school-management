@@ -1,13 +1,12 @@
 import Image from "next/image";
-import { redirect } from "next/navigation";
 import FormContainer from "@/components/FormContainer";
 import Pagination from "@/components/Pagination";
 import Table from "@/components/Table";
 import TableSearch from "@/components/TableSearch";
+import { DEV_USER_ID, getSessionRole } from "@/lib/devAuth";
 import prisma from "@/lib/prisma";
 import { ITEM_PER_PAGE } from "@/lib/settings";
 import { Announcement, Class, Prisma } from "@prisma/client";
-import { auth } from "@clerk/nextjs/server";
 
 type AnnouncementList = Announcement & { class: Pick<Class, "id" | "name"> };
 
@@ -16,10 +15,8 @@ type PageProps = {
 };
 
 const AnnouncementListPage = async ({ searchParams }: PageProps) => {
-  const { userId, sessionClaims } = auth();
-  if (!userId) redirect("/sign-in"); // guard
-
-  const role = (sessionClaims?.metadata as { role?: "admin" | "teacher" | "student" | "parent" })?.role ?? "student";
+  const userId = DEV_USER_ID;
+  const role = getSessionRole();
 
   // Columns must match cells
   const columns = [
