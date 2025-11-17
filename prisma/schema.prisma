@@ -3,7 +3,7 @@ generator client {
 }
 
 datasource db {
-  provider = "postgresql"
+  provider = "sqlite" // or "postgresql" / "mysql" / etc.
   url      = env("DATABASE_URL")
 }
 
@@ -26,8 +26,8 @@ model Student {
   bloodType   String?
   sex         UserSex?
   createdAt   DateTime     @default(now())
-  parentId    String
-  parent      Parent       @relation(fields: [parentId], references: [id])
+  parentId    String?
+  parent      Parent?      @relation(fields: [parentId], references: [id])
   classId     Int
   class       Class        @relation(fields: [classId], references: [id])
   gradeId     Int
@@ -37,24 +37,9 @@ model Student {
   birthday    DateTime
 
   // --- New fields for WSA digital access / eSpark lookups ---
-<<<<<<< HEAD
-  fullNameLower String // e.g. "jaxon anderson" for search
-  gradeLevel    Int
 
-  cleverId  String  @unique // student_Clever_ID from Clever
-  testingId String? @unique // Student_testing_ID (can be null / missing)
-
-  esparkUsername String? // eSpark_Username from the sheet
-  esparkPassword String? // eSpark_Password from the sheet
-  hasEsparkCreds Boolean @default(false)
-
-  // Optional parent contact fields copied directly from my roster file
-  guardianName  String?
-  guardianEmail String?
-  guardianPhone String?
-  homeroom      String?
-=======
-  fullNameLower  String        // e.g. "jaxon anderson" for search
+  fullNameLower String        // e.g. "jaxon anderson" for search
+  gradeLevel    Int           // numeric grade (2,3,4,5) from the roster
 
   cleverId       String        @unique   // student_Clever_ID from Clever
   testingId      String?       @unique   // Student_testing_ID (can be null / missing)
@@ -67,7 +52,7 @@ model Student {
   guardianName   String?
   guardianEmail  String?
   guardianPhone  String?
->>>>>>> main
+  homeroom       String?
 
   @@index([fullNameLower])
 }

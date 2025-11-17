@@ -70,7 +70,7 @@ export const deleteSubject = async (
   try {
     await prisma.subject.delete({
       where: {
-        id: parseInt(id),
+        id: parseInt(id, 10),
       },
     });
 
@@ -127,7 +127,7 @@ export const deleteClass = async (
   try {
     await prisma.class.delete({
       where: {
-        id: parseInt(id),
+        id: parseInt(id, 10),
       },
     });
 
@@ -160,7 +160,7 @@ export const createTeacher = async (
         birthday: data.birthday,
         subjects: {
           connect: data.subjects?.map((subjectId: string) => ({
-            id: parseInt(subjectId),
+            id: parseInt(subjectId, 10),
           })),
         },
       },
@@ -199,7 +199,7 @@ export const updateTeacher = async (
         birthday: data.birthday,
         subjects: {
           set: data.subjects?.map((subjectId: string) => ({
-            id: parseInt(subjectId),
+            id: parseInt(subjectId, 10),
           })),
         },
       },
@@ -220,7 +220,7 @@ export const deleteTeacher = async (
   try {
     await prisma.teacher.delete({
       where: {
-        id: id,
+        id,
       },
     });
 
@@ -247,7 +247,7 @@ export const createStudent = async (
     }
 
     const studentId = data.id ?? randomUUID();
-<<<<<<< HEAD
+
     const gradeLevelFromGrade = await prisma.grade.findUnique({
       where: { id: data.gradeId },
       select: { level: true },
@@ -255,7 +255,8 @@ export const createStudent = async (
 
     const firstName = data.name;
     const lastName = data.surname;
-    const email = data.email?.trim() || `${data.username || studentId}@example.com`;
+    const email =
+      data.email?.trim() || `${data.username || studentId}@example.com`;
     const cleverId = data.cleverId?.trim() || `${studentId}-clever`;
     const testingId = data.testingId?.trim() || null;
     const esparkUsername = data.esparkUsername?.trim() || null;
@@ -265,11 +266,8 @@ export const createStudent = async (
     const guardianEmail = data.guardianEmail?.trim() || null;
     const guardianPhone = data.guardianPhone?.trim() || null;
     const homeroom = data.homeroom?.trim() || null;
-    const gradeLevel =
-      data.gradeLevel ?? gradeLevelFromGrade?.level ?? 0;
+    const gradeLevel = data.gradeLevel ?? gradeLevelFromGrade?.level ?? 0;
 
-=======
->>>>>>> main
     await prisma.student.create({
       data: {
         id: studentId,
@@ -318,7 +316,6 @@ export const updateStudent = async (
     return { success: false, error: true };
   }
   try {
-<<<<<<< HEAD
     const existingStudent = await prisma.student.findUnique({
       where: { id: data.id },
       select: {
@@ -354,7 +351,9 @@ export const updateStudent = async (
     const firstName = data.name || existingStudent.firstName;
     const lastName = data.surname || existingStudent.lastName;
     const email =
-      data.email?.trim() || existingStudent.email || `${data.username}@example.com`;
+      data.email?.trim() ||
+      existingStudent.email ||
+      `${data.username}@example.com`;
     const cleverId = data.cleverId?.trim() || existingStudent.cleverId;
     const testingId = data.testingId?.trim() ?? existingStudent.testingId;
     const esparkUsername =
@@ -362,17 +361,18 @@ export const updateStudent = async (
     const esparkPassword =
       data.esparkPassword?.trim() ?? existingStudent.esparkPassword;
     const hasEsparkCreds = Boolean(esparkUsername || esparkPassword);
-    const guardianName = data.guardianName?.trim() ?? existingStudent.guardianName;
+    const guardianName =
+      data.guardianName?.trim() ?? existingStudent.guardianName;
     const guardianEmail =
       data.guardianEmail?.trim() ?? existingStudent.guardianEmail;
     const guardianPhone =
       data.guardianPhone?.trim() ?? existingStudent.guardianPhone;
     const homeroom = data.homeroom?.trim() ?? existingStudent.homeroom;
     const gradeLevel =
-      data.gradeLevel ?? gradeLevelFromGrade?.level ?? existingStudent.gradeLevel;
+      data.gradeLevel ??
+      gradeLevelFromGrade?.level ??
+      existingStudent.gradeLevel;
 
-=======
->>>>>>> main
     await prisma.student.update({
       where: {
         id: data.id,
@@ -422,7 +422,7 @@ export const deleteStudent = async (
   try {
     await prisma.student.delete({
       where: {
-        id: id,
+        id,
       },
     });
 
@@ -438,23 +438,7 @@ export const createExam = async (
   currentState: CurrentState,
   data: ExamSchema
 ) => {
-  // const { userId, sessionClaims } = auth();
-  // const role = (sessionClaims?.metadata as { role?: string })?.role;
-
   try {
-    // if (role === "teacher") {
-    //   const teacherLesson = await prisma.lesson.findFirst({
-    //     where: {
-    //       teacherId: userId!,
-    //       id: data.lessonId,
-    //     },
-    //   });
-
-    //   if (!teacherLesson) {
-    //     return { success: false, error: true };
-    //   }
-    // }
-
     await prisma.exam.create({
       data: {
         title: data.title,
@@ -476,23 +460,7 @@ export const updateExam = async (
   currentState: CurrentState,
   data: ExamSchema
 ) => {
-  // const { userId, sessionClaims } = auth();
-  // const role = (sessionClaims?.metadata as { role?: string })?.role;
-
   try {
-    // if (role === "teacher") {
-    //   const teacherLesson = await prisma.lesson.findFirst({
-    //     where: {
-    //       teacherId: userId!,
-    //       id: data.lessonId,
-    //     },
-    //   });
-
-    //   if (!teacherLesson) {
-    //     return { success: false, error: true };
-    //   }
-    // }
-
     await prisma.exam.update({
       where: {
         id: data.id,
@@ -519,14 +487,10 @@ export const deleteExam = async (
 ) => {
   const id = data.get("id") as string;
 
-  // const { userId, sessionClaims } = auth();
-  // const role = (sessionClaims?.metadata as { role?: string })?.role;
-
   try {
     await prisma.exam.delete({
       where: {
-        id: parseInt(id),
-        // ...(role === "teacher" ? { lesson: { teacherId: userId! } } : {}),
+        id: parseInt(id, 10),
       },
     });
 

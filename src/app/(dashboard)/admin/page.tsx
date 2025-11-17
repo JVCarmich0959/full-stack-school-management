@@ -15,6 +15,13 @@ type AdminPageProps = {
 };
 
 const AdminPage: FC<AdminPageProps> = ({ searchParams }) => {
+  const normalizedSearchParams = Object.fromEntries(
+    Object.entries(searchParams).map(([key, value]) => [
+      key,
+      Array.isArray(value) ? value[0] : value,
+    ])
+  ) as { [key: string]: string | undefined };
+
   return (
     <div className="p-4 lg:p-6 grid gap-6 lg:gap-8 lg:grid-cols-3" role="main" aria-labelledby="dashboard-title">
       {/* LEFT (spans 2 cols on large) */}
@@ -47,7 +54,7 @@ const AdminPage: FC<AdminPageProps> = ({ searchParams }) => {
 
       {/* RIGHT RAIL */}
       <aside className="flex flex-col gap-6" aria-label="Calendar and announcements">
-        <EventCalendarContainer searchParams={searchParams} />
+        <EventCalendarContainer searchParams={normalizedSearchParams} />
         <Announcements />
       </aside>
     </div>

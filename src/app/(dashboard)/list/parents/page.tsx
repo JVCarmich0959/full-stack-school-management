@@ -51,34 +51,75 @@ const columns = [
     : []),
 ];
 
-const renderRow = (item: ParentList) => (
-  <tr
-    key={item.id}
-    className="border-b border-gray-200 even:bg-slate-50 text-sm hover:bg-plPurpleLight"
-  >
-    <td className="flex items-center gap-4 p-4">
-      <div className="flex flex-col">
-        <h3 className="font-semibold">{item.name}</h3>
-        <p className="text-xs text-gray-500">{item?.email}</p>
-      </div>
-    </td>
-    <td className="hidden md:table-cell">
-      {item.students.map((student) => student.name).join(",")}
-    </td>
-    <td className="hidden md:table-cell">{item.phone}</td>
-    <td className="hidden md:table-cell">{item.address}</td>
-    <td>
-      <div className="flex items-center gap-2">
-        {role === "admin" && (
-          <>
-            <FormContainer table="parent" type="update" data={item} />
-            <FormContainer table="parent" type="delete" id={item.id} />
-          </>
-        )}
-      </div>
-    </td>
-  </tr>
-);
+const renderRow = (item: ParentList) => {
+  const guardianNames = Array.from(
+    new Set(
+      item.students
+        .map((student) => student.guardianName?.trim())
+        .filter((value): value is string => Boolean(value))
+    )
+  );
+
+  const guardianPhones = Array.from(
+    new Set(
+      item.students
+        .map((student) => student.guardianPhone?.trim())
+        .filter((value): value is string => Boolean(value))
+    )
+  );
+
+  const guardianEmails = Array.from(
+    new Set(
+      item.students
+        .map((student) => student.guardianEmail?.trim())
+        .filter((value): value is string => Boolean(value))
+    )
+  );
+
+  const fullName =
+    guardianNames.join(", ") ||
+    [item.name, item.surname].filter(Boolean).join(" ").trim() ||
+    "Unknown Parent";
+
+  const emailLabel =
+    item.email?.trim() || guardianEmails.join(", ") || "No email";
+
+  const phoneLabel =
+    item.phone?.trim() || guardianPhones.join(", ") || "Unknown";
+
+  const addressLabel = item.address?.trim() ? item.address : "Unknown";
+
+  return (
+    <tr
+      key={item.id}
+      className="border-b border-gray-200 even:bg-slate-50 text-sm hover:bg-plPurpleLight"
+    >
+      <td className="flex items-center gap-4 p-4">
+        <div className="flex flex-col">
+          <h3 className="font-semibold">{fullName}</h3>
+          <p className="text-xs text-gray-500">{item?.email || "No email"}</p>
+        </div>
+      </td>
+      <td className="hidden md:table-cell">
+      {item.students
+        .map((student) => `${student.firstName ?? student.name} ${student.lastName ?? ""}`.trim())
+        .join(", ")}
+      </td>
+      <td className="hidden md:table-cell">{phoneLabel}</td>
+      <td className="hidden md:table-cell">{addressLabel}</td>
+      <td>
+        <div className="flex items-center gap-2">
+          {role === "admin" && (
+            <>
+              <FormContainer table="parent" type="update" data={item} />
+              <FormContainer table="parent" type="delete" id={item.id} />
+            </>
+          )}
+        </div>
+      </td>
+    </tr>
+  );
+};
 
   const { page, ...queryParams } = searchParams;
 
@@ -93,7 +134,7 @@ const renderRow = (item: ParentList) => (
       if (value !== undefined) {
         switch (key) {
           case "search":
-            query.name = { contains: value, mode: "insensitive" };
+            query.name = { contains: value };
             break;
           default:
             break;
