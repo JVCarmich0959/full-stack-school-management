@@ -247,13 +247,38 @@ export const createStudent = async (
     }
 
     const studentId = data.id ?? randomUUID();
+<<<<<<< HEAD
+    const gradeLevelFromGrade = await prisma.grade.findUnique({
+      where: { id: data.gradeId },
+      select: { level: true },
+    });
+
+    const firstName = data.name;
+    const lastName = data.surname;
+    const email = data.email?.trim() || `${data.username || studentId}@example.com`;
+    const cleverId = data.cleverId?.trim() || `${studentId}-clever`;
+    const testingId = data.testingId?.trim() || null;
+    const esparkUsername = data.esparkUsername?.trim() || null;
+    const esparkPassword = data.esparkPassword?.trim() || null;
+    const hasEsparkCreds = Boolean(esparkUsername || esparkPassword);
+    const guardianName = data.guardianName?.trim() || null;
+    const guardianEmail = data.guardianEmail?.trim() || null;
+    const guardianPhone = data.guardianPhone?.trim() || null;
+    const homeroom = data.homeroom?.trim() || null;
+    const gradeLevel =
+      data.gradeLevel ?? gradeLevelFromGrade?.level ?? 0;
+
+=======
+>>>>>>> main
     await prisma.student.create({
       data: {
         id: studentId,
         username: data.username,
         name: data.name,
         surname: data.surname,
-        email: data.email || null,
+        firstName,
+        lastName,
+        email,
         phone: data.phone || null,
         address: data.address,
         img: data.img || null,
@@ -263,6 +288,17 @@ export const createStudent = async (
         gradeId: data.gradeId,
         classId: data.classId,
         parentId: data.parentId,
+        fullNameLower: `${firstName} ${lastName}`.toLowerCase(),
+        gradeLevel,
+        cleverId,
+        testingId,
+        esparkUsername,
+        esparkPassword,
+        hasEsparkCreds,
+        guardianName,
+        guardianEmail,
+        guardianPhone,
+        homeroom,
       },
     });
 
@@ -282,6 +318,61 @@ export const updateStudent = async (
     return { success: false, error: true };
   }
   try {
+<<<<<<< HEAD
+    const existingStudent = await prisma.student.findUnique({
+      where: { id: data.id },
+      select: {
+        cleverId: true,
+        gradeLevel: true,
+        email: true,
+        firstName: true,
+        lastName: true,
+        hasEsparkCreds: true,
+        testingId: true,
+        esparkUsername: true,
+        esparkPassword: true,
+        guardianName: true,
+        guardianEmail: true,
+        guardianPhone: true,
+        homeroom: true,
+        gradeId: true,
+      },
+    });
+
+    if (!existingStudent) {
+      return { success: false, error: true };
+    }
+
+    const gradeLevelFromGrade =
+      data.gradeId && data.gradeId !== existingStudent.gradeId
+        ? await prisma.grade.findUnique({
+            where: { id: data.gradeId },
+            select: { level: true },
+          })
+        : null;
+
+    const firstName = data.name || existingStudent.firstName;
+    const lastName = data.surname || existingStudent.lastName;
+    const email =
+      data.email?.trim() || existingStudent.email || `${data.username}@example.com`;
+    const cleverId = data.cleverId?.trim() || existingStudent.cleverId;
+    const testingId = data.testingId?.trim() ?? existingStudent.testingId;
+    const esparkUsername =
+      data.esparkUsername?.trim() ?? existingStudent.esparkUsername;
+    const esparkPassword =
+      data.esparkPassword?.trim() ?? existingStudent.esparkPassword;
+    const hasEsparkCreds = Boolean(esparkUsername || esparkPassword);
+    const guardianName = data.guardianName?.trim() ?? existingStudent.guardianName;
+    const guardianEmail =
+      data.guardianEmail?.trim() ?? existingStudent.guardianEmail;
+    const guardianPhone =
+      data.guardianPhone?.trim() ?? existingStudent.guardianPhone;
+    const homeroom = data.homeroom?.trim() ?? existingStudent.homeroom;
+    const gradeLevel =
+      data.gradeLevel ?? gradeLevelFromGrade?.level ?? existingStudent.gradeLevel;
+
+=======
+>>>>>>> main
     await prisma.student.update({
       where: {
         id: data.id,
@@ -290,7 +381,9 @@ export const updateStudent = async (
         username: data.username,
         name: data.name,
         surname: data.surname,
-        email: data.email || null,
+        firstName,
+        lastName,
+        email,
         phone: data.phone || null,
         address: data.address,
         img: data.img || null,
@@ -300,6 +393,17 @@ export const updateStudent = async (
         gradeId: data.gradeId,
         classId: data.classId,
         parentId: data.parentId,
+        fullNameLower: `${firstName} ${lastName}`.toLowerCase(),
+        gradeLevel,
+        cleverId,
+        testingId,
+        esparkUsername,
+        esparkPassword,
+        hasEsparkCreds,
+        guardianName,
+        guardianEmail,
+        guardianPhone,
+        homeroom,
       },
     });
     // revalidatePath("/list/students");

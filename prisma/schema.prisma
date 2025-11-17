@@ -13,16 +13,18 @@ model Admin {
 }
 
 model Student {
-  id          String       @id
-  username    String       @unique
-  name        String
-  surname     String
-  email       String?      @unique
-  phone       String?      @unique
-  address     String
+  id          String       @id @default(cuid())
+  username    String?      @unique
+  name        String?
+  surname     String?
+  firstName   String
+  lastName    String
+  email       String       @unique
+  phone       String?
+  address     String?
   img         String?
-  bloodType   String
-  sex         UserSex
+  bloodType   String?
+  sex         UserSex?
   createdAt   DateTime     @default(now())
   parentId    String
   parent      Parent       @relation(fields: [parentId], references: [id])
@@ -35,6 +37,23 @@ model Student {
   birthday    DateTime
 
   // --- New fields for WSA digital access / eSpark lookups ---
+<<<<<<< HEAD
+  fullNameLower String // e.g. "jaxon anderson" for search
+  gradeLevel    Int
+
+  cleverId  String  @unique // student_Clever_ID from Clever
+  testingId String? @unique // Student_testing_ID (can be null / missing)
+
+  esparkUsername String? // eSpark_Username from the sheet
+  esparkPassword String? // eSpark_Password from the sheet
+  hasEsparkCreds Boolean @default(false)
+
+  // Optional parent contact fields copied directly from my roster file
+  guardianName  String?
+  guardianEmail String?
+  guardianPhone String?
+  homeroom      String?
+=======
   fullNameLower  String        // e.g. "jaxon anderson" for search
 
   cleverId       String        @unique   // student_Clever_ID from Clever
@@ -48,6 +67,7 @@ model Student {
   guardianName   String?
   guardianEmail  String?
   guardianPhone  String?
+>>>>>>> main
 
   @@index([fullNameLower])
 }

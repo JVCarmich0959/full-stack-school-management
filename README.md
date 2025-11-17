@@ -13,7 +13,6 @@
 ![PostgreSQL](https://img.shields.io/badge/PostgreSQL-336791?style=for-the-badge&logo=postgresql&logoColor=white)
 ![Docker](https://img.shields.io/badge/Docker-2496ED?style=for-the-badge&logo=docker&logoColor=white)
 ![Clerk](https://img.shields.io/badge/Clerk-6C47FF?style=for-the-badge&logo=clerk&logoColor=white)
-![Bun](https://img.shields.io/badge/Bun-000000?style=for-the-badge&logo=bun&logoColor=white)
 ![Coolify](https://img.shields.io/badge/Coolify-4A90E2?style=for-the-badge&logo=coolify&logoColor=white)
 
 ## 📖 Project Overview
@@ -69,7 +68,7 @@ EduSphere is a comprehensive School Management System built with Next.js and Tai
 
 ### Prerequisites
 - Node.js (v18+)
-- Bun
+- npm
 - Docker
 - PostgreSQL
 
@@ -85,20 +84,27 @@ cd full-stack-school-management
 2. Install dependencies
 
 ```bash
-bun install
+npm install
 ```
 
-3. Set up environment variables
+3. Set up environment variables (PostgreSQL is the canonical database)
 
 ```bash
 cp .env.example .env
-# Fill in your configuration
+# Update DATABASE_URL if needed, e.g. postgresql://postgres:postgres@localhost:5432/school_db?schema=public
 ```
 
-4. Run the development server
+4. Run Prisma migrations and seed data
 
 ```bash
-bun dev
+npx prisma migrate dev --name init_postgres
+npx prisma db seed
+```
+
+5. Run the development server
+
+```bash
+npm run dev
 ```
 
 ## 🤝 Contributing
