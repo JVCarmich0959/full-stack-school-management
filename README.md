@@ -1,6 +1,6 @@
 # SchoolLinq: Full Stack School Management System
 
-![dashboard](./public/dashboard.jpeg)
+
 
 
 ## 🚀 Tech Stack
