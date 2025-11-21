@@ -157,9 +157,25 @@ const SingleStudentPage = async ({
       </div>
       {/* RIGHT */}
       <div className="w-full xl:w-1/3 flex flex-col gap-4">
-        <div className="bg-white p-4 rounded-md">
-          <h1 className="text-xl font-semibold">Shortcuts</h1>
-          <div className="mt-4 flex gap-4 flex-wrap text-xs text-gray-500">
+        <div className="bg-white p-4 rounded-md flex flex-col gap-4">
+          <h1 className="text-xl font-semibold">Digital Access</h1>
+          <div className="flex flex-col gap-2 text-sm text-gray-600">
+            <div className="flex items-center justify-between rounded-md bg-plSkyLight px-3 py-2">
+              <span className="font-medium">eSpark Username</span>
+              <span className="text-gray-800">
+                {student.esparkUsername || "—"}
+              </span>
+            </div>
+            <div className="flex items-center justify-between rounded-md bg-plPurpleLight px-3 py-2">
+              <span className="font-medium">eSpark Password</span>
+              <span className="text-gray-800">
+                {student.esparkPassword || "—"}
+              </span>
+            </div>
+          </div>
+
+          <h2 className="text-xl font-semibold pt-2">Shortcuts</h2>
+          <div className="mt-2 flex gap-4 flex-wrap text-xs text-gray-500">
             <Link
               className="p-3 rounded-md bg-plSkyLight"
               href={`/list/lessons?classId=${student.class.id}`}

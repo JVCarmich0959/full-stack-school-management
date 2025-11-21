@@ -17,11 +17,7 @@
 
 ## 📖 Project Overview
 
-ScholarLinq is a comprehensive School Management System built with Next.js and Tailwind CSS. Inspired by Lama Dev's tutorial, this full-stack application provides a robust solution for managing school operations across different user roles.
-
-### 🎥 Tutorial Credits
-- **Original Tutorial**: [Lama Dev YouTube Tutorial](https://www.youtube.com/watch?v=6sfiAyKy8Jo)
-
+ScholarLinq is a comprehensive School Management System built with Next.js and Tailwind CSS. 
 ## 🌟 Features
 
 - Multi-role dashboard (Admin, Teacher, Student, Parent)
