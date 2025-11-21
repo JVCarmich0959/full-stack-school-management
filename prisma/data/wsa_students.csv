@@ -1,5 +1,5 @@
-Last Name,First Name,Student Email,Parent/Guardian Name,Parent/Guardian Email,Parent/Guardian Phone,Teacher,Student_testing_ID,student_Clever_ID,student_grade_level,eSpark_Username,eSpark_Password
-Anderson,Jaxon,jaxonanderson95@waynestem.org,Morgan Ritter,Morgan.ritter@yahoo.com,941-661-3711,Fortner,9675742895,68cb71dad6eb003100e759bc,K,        68cb71dad6eb003100e759bc,COST
+Last_Name,First_Name,Student_Email,Parent_Name,Parent_Email,Parent_Phone,Teacher,Student_testing_ID,Student_Clever_ID,student_grade_level,eSpark_Username,eSpark_Password
+Anderson,Jaxon,jaxonanderson95@waynestem.org,Morgan Ritter,Morgan.ritter@yahoo.com,941-661-3711,Fortner,9675742895,68cb71dad6eb003100e759bc,K,68cb71dad6eb003100e759bc,COST
 Anguiano,Lyanna,lyannanguiano49@waynestem.org,Diana Torres,Al.dg711@gmail.com,919-223-4930,Fortner,1319789749,68cb71dad6eb003100e759e0,K,68cb71dad6eb003100e759e0,SHOP
 Barber,Sophia,sophiabarber94@waynestem.org,Brianna Barber,b.longo95@gmail.com,757-969-9332,Fortner,9757531294,68cb71dad6eb003100e7599e,K,68cb71dad6eb003100e7599e,KEEN
 Briggs,Ahkeem,ahkeembriggs15@waynestem.org,Raveen Briggs,raveenmariee@hotmail.com,757-742-1088,Fortner,2638282715,68cb71dad6eb003100e759b8,K,68cb71dad6eb003100e759b8,BAGS
@@ -112,7 +112,7 @@ Pulley,Lucas,lucaspulley91@waynestem.org,,,,Woresly,9272637791,66ca8094f33fcd059
 Uzzardo,Josiah,josiahuzzardo43@waynestem.org,,,,Woresly,1173526943,66e1ef99c65860598d1c479e,1,josiahuzzardo,WSA2024
 Velasquez,Liam,liamvelasquez36@waynestem.org,Marissa Momper,marissamunguia9@gmail.com,361-342-6830,Woresly,6767237736,68cb71dad6eb003100e759c0,1,liamv25,WSA2025
 Whitaker,Samuel,samuelwhitaker12@waynestem.org,Camila Whitaker,camilazuritaq@gmail.com,919-394-3957,Woresly,5624327412,68cb71dad6eb003100e7594d,1,samuelwhitaker,TALK
-Williams,Saniya,saniyawilliams85@waynestem.org,Brittany Jackson,bnjackson95@outlook.com,757-613-2022,Woresly,7858292285,68cb71dad6eb003100e759b5,2,saniyawilliams5,CORN
+Williams,Saniya,saniyawilliams85@waynestem.org,Brittany Jackson,bnjackson95@outlook.com,757-613-2022,Woresly,7858292285,68cb71dad6eb003100e759b5,1,saniyawilliams5,CORN
 Alford,Wyatt,wyattalford13@waynestem.org,,,,Cosetti,8615198713,66ca8094f33fcd0596b144d1,1,wyattalford,DROP
 Branch,Rhiley,rhileybranch68@waynestem.org,,,,Cosetti,9834283768,66ca8094f33fcd0596b144ca,1,rhileybranch,WSA2025
 Buckner,Tyon,tyonbuckner23@waynestem.org,,,,Cosetti,9451171223,66ca8094f33fcd0596b144c9,1,tyonbuckner,wsa2025
@@ -129,8 +129,8 @@ Killarney,Mykayla,mykayla.killarney55@waynestem.org,Elizabeth Lawson,Enlawson078
 McFarland,Ashanti,ashantimcfarland58@waynestem.org,,,,Cosetti,2729362428,66ca8094f33fcd0596b144c5,1,ashantimcfarland,WSA2025
 Robinson,Amaris,amarisrobinson15@waynestem.org,,,,Cosetti,2278487515,66ca8094f33fcd0596b144cf,1,amarisrobinson,wsa2025
 Turney,Theodore,theodoreturney56@waynestem.org,,,,Cosetti,7342874256,66e88361540c1600dc591c5a,1,theodoreturney,wsa2025
-Williams,Kailee,kaileewilliams59@waynestem.org,Kirelle Segers,kirellesegers226@gmail.com,919-258-1792,Cosetti,8962928159,68cb71dad6eb003100e75996,2,kaileewilliams2,THAN
-Wrestler,Brody,brodywrestler99@waynestem.org,Lawrence Wrestler,LILFATWRESTLER@GMAIL.COM,620-212-1874,Cosetti,6911468299,68cb71dad6eb003100e75951,2,brodywrestler,SPOT
+Williams,Kailee,kaileewilliams59@waynestem.org,Kirelle Segers,kirellesegers226@gmail.com,919-258-1792,Cosetti,8962928159,68cb71dad6eb003100e75996,1,kaileewilliams2,THAN
+Wrestler,Brody,brodywrestler99@waynestem.org,Lawrence Wrestler,LILFATWRESTLER@GMAIL.COM,620-212-1874,Cosetti,6911468299,68cb71dad6eb003100e75951,1,brodywrestler,SPOT
 Bechel,Olivia,oliviabechel74@waynestem.org,,,,J. Smith,2673585974,66ca8094f33fcd0596b144d4,1,oliviabechel,WSA2025
 Bechel,Violet,violetbechel57@waynestem.org,,,,J. Smith,1323342257,66ca8094f33fcd0596b144d9,1,,
 Brown,Lucas,lucasbrown27@waynestem.org,,,,J. Smith,2533143227,66edc7cc68854a79641c48c4,1,,
@@ -166,7 +166,7 @@ McGill,Gunner,gunnermcgill17@waynestem.org,,,,Brantley,6355952217,66ef13511b45f1
 Mosley,Amour,amourmosley33@waynestem.org,,,,Brantley,2162247933,6556375278b980014b9d565d,2,amourmosley,1234
 Offield,Nora,noraoffield91@waynestem.org,,,,Brantley,9717549591,6556375278b980014b9d562e,2,noraoffield,ITCH
 Toms,Everett,everetttoms31@waynestem.org,,,,Brantley,8655152331,6556375278b980014b9d5634,2,everetttoms1,1234
-Vazquez-Deniz,Vianne,viannevazquez47@waynestem.org,,,,Brantley,2134737247,6556375278b980014b9d5623,3,viannevazquez-deniz,BEAR
+Vazquez-Deniz,Vianne,viannevazquez47@waynestem.org,,,,Brantley,2134737247,6556375278b980014b9d5623,2,viannevazquez-deniz,BEAR
 Artis,Ava,avaartis56@waynestem.org,,,,Pollard,6618789656,6556375278b980014b9d5692,2,avaartis,GAME
 Barrett,Caimile,caimilebarrett46@waynestem.org,Constance Barrett,chuckcu@yahoo.com,252-902-9229,Pollard,7743875946,68cb71dad6eb003100e7598b,2,68cb71dad6eb003100e7598b,POST
 Best,Cameron,cameronbest21@waynestem.org,,,,Pollard,6115474221,6556375278b980014b9d5690,2,cameronbest,wsa24
@@ -184,7 +184,7 @@ Ohmie-Lopez,Khloe,khloelopez58@waynestem.org,,,,Pollard,9431263858,6556375278b98
 Quarles,Arizona,arizonaquarles69@waynestem.org,,,,Pollard,4825664369,6556375278b980014b9d5609,2,arizonaquarles,CHEW
 Richardson,Brandon,brandonrichardson79@waynestem.org,,,,Pollard,3447691379,66edc7cc68854a79641c48c8,2,66edc7cc68854a79641c48c8,ROLL
 Van,Kamia,kamiavan41@waynestem.org,,,,Pollard,7953175541,6723ffd2ca3a6d134c1af244,2,kamiavan,TWIG
-White,Serinity,serinitywhite74@waynestem.org,,,,Pollard,1776936574,66edc7cc68854a79641c48c7,3,serinitywhite,BATS
+White,Serinity,serinitywhite74@waynestem.org,,,,Pollard,1776936574,66edc7cc68854a79641c48c7,2,serinitywhite,BATS
 Bass,Laeoni,laeoni.bass13@waynestem.org,Nautika Bass,nautikabass1@gmsil.com,919-394-1259,Ham,4948522813,68ef30cf4fb4284fc976a76d,2,,
 Bost,Sawyer,sawyerbost29@waynestem.org,,,,Ham,3121123629,6556375278b980014b9d5657,2,sawyerbost,1234
 Crews,Benjamin,benjamincrews17@waynestem.org,,,,Ham,2718667117,6556375278b980014b9d56a1,2,benjamincrews,1234
@@ -203,8 +203,8 @@ O'Hara,Chaya,chayaohara63@waynestem.org,,,,Ham,6927392963,66ef13511b45f138a5bc84
 Oates,Travis,travisoates69@waynestem.org,,,,Ham,8329354369,66f1964fb5d39601b5872b1a,2,travisoates,1234
 Schools,Rylee,ryleeschools43@waynestem.org,,,,Ham,5588447743,66f1964fb5d39601b5872b19,2,ryleeschools,1234
 Spence,Evan,evanspence98@waynestem.org,,,,Ham,4463831598,6556375278b980014b9d5668,2,,
-Vann,Bella,bellavann44@waynestem.org,,,,Ham,9235416744,6556375278b980014b9d56bc,3,bellavann,1234
-Woon-Rodriguez,Leilani,leilaniwoonrodriguez83@waynestem.org,Cristy Rodriguez,cristylizetterodriguez@gmail.com,919-440-1528,Ham,7869855383,68cb71dad6eb003100e75988,3,LeilaniW1,1234
+Vann,Bella,bellavann44@waynestem.org,,,,Ham,9235416744,6556375278b980014b9d56bc,2,bellavann,1234
+Woon-Rodriguez,Leilani,leilaniwoonrodriguez83@waynestem.org,Cristy Rodriguez,cristylizetterodriguez@gmail.com,919-440-1528,Ham,7869855383,68cb71dad6eb003100e75988,2,LeilaniW1,1234
 Bailey,Trenton,trentonbailey13@waynestem.org,,,,Clark,3638941213,6556375278b980014b9d5687,2,trentonbailey1,wsa24
 Bost,John,johnbost59@waynestem.org,,,,Clark,1732814759,6556375278b980014b9d5658,2,johnbost,1234
 Fishman,Emilia,emiliafisherman82@waynestem.org,,,,Clark,7729371782,66e88361540c1600dc591c5b,2,emiliafishman,DOGS
@@ -238,9 +238,9 @@ McDanel,Mason,masonmcdaniel83@waynestem.org,,,,Danis/McClain,1828575283,65563752
 Moran,Alexia,alexiamoran95@waynestem.org,Jessica Aguilar,jessica.aguilar32@yahoo.com,919-288-5914,Danis/McClain,9733451495,68cb71dad6eb003100e7594a,3,68cb71dad6eb003100e7594a,ROCK
 Oates,Bryson,brysonoates68@waynestem.org,,,,Danis/McClain,6219811968,6556375278b980014b9d56aa,3,brysonoates,CUPS
 Smith,Jaxen,jaxensmith74@waynestem.org,,,,Danis/McClain,2785233174,66ca8094f33fcd0596b1447d,3,jaxensmith4,BASE
-Uzzell,Imiya,imiyauzzell43@waynestem.org,,,,Danis/McClain,2938379943,66ca8094f33fcd0596b1447f,4,,
-Woresly,Ryhan,ryhanworesly57@waynestem.org,,,,Danis/McClain,6141428657,66ca8094f33fcd0596b14476,4,ryhanworesly,WEAR
-Young,Jayceon,jayceonyoung81@waynestem.org,Latia Young,latiajyoung@icloud.com,252-560-5105,Danis/McClain,7174133681,68cb71dad6eb003100e7597f,4,68cb71dad6eb003100e7597f,BOOK
+Uzzell,Imiya,imiyauzzell43@waynestem.org,,,,Danis/McClain,2938379943,66ca8094f33fcd0596b1447f,3,,
+Woresly,Ryhan,ryhanworesly57@waynestem.org,,,,Danis/McClain,6141428657,66ca8094f33fcd0596b14476,3,ryhanworesly,WEAR
+Young,Jayceon,jayceonyoung81@waynestem.org,Latia Young,latiajyoung@icloud.com,252-560-5105,Danis/McClain,7174133681,68cb71dad6eb003100e7597f,3,68cb71dad6eb003100e7597f,BOOK
 Artis,King,kingartis94@waynestem.org,,,,Mello,1618571494,6556375278b980014b9d5678,3,kingartis,smith
 Carlton,Noah,noahcarlton42@waynestem.org,,,,Mello,8676527342,66ca8094f33fcd0596b14486,3,noahcarlton4,FILM
 Dyce,Sy'Euri,sy'euridyce49@waynestem.org,Sade Kenner,sadekenner26@icloud.com,919-648-3717,Mello,7636711249,68cb71dad6eb003100e75958,3,68cb71dad6eb003100e75958,REAL
@@ -257,8 +257,8 @@ Sanders,Ezekiel,ezekielsanders48@waynestem.org,Lindsey Sanders,Lindseysanders200
 Spriggs,Maya,mayaspriggs@waynestem.org,,,,Mello,4366142856,66ca8094f33fcd0596b14484,3,mayaspriggs,Smith
 Staats-Walker,Nora,norastaats62@waynestem.org,,,,Mello,1948866862,6556375278b980014b9d569a,3,norastaats-walker,THEY
 Starke,Antonio,antoniostarke83@waynestem.org,,,,Mello,3137292883,66ca8094f33fcd0596b1447e,3,antoniostarke,RULE
-Torterotot,Morgan,morgantorterotot23@waynestem.org,Khadijah Brown,khadijah.brown0@yahoo.com,984-302-0446,Mello,7994727123,68cb71dad6eb003100e75948,4,68cb71dad6eb003100e75948,STAY
-Vann,Ari,arivann89@waynestem.org,,,,Mello,7435998389,6556375278b980014b9d5698,4,arivann,Smith
+Torterotot,Morgan,morgantorterotot23@waynestem.org,Khadijah Brown,khadijah.brown0@yahoo.com,984-302-0446,Mello,7994727123,68cb71dad6eb003100e75948,3,68cb71dad6eb003100e75948,STAY
+Vann,Ari,arivann89@waynestem.org,,,,Mello,7435998389,6556375278b980014b9d5698,3,arivann,Smith
 Alford,Lucas,lucasalford42@waynestem.org,,,,Jones,1235631842,6556375278b980014b9d569f,3,lucasalford2,MORE
 Batts,Kameron,kameronbatts47@waynestem.org,,,,Jones,5577131847,6556375278b980014b9d5680,3,kameronbatts1,HEAP
 Best,Makenna,makennabest73@waynestem.org,Jessica Best,jessicachavousbest@gmail.com,919-222-3580,Jones,2735496473,68cb71dad6eb003100e759c3,3,68cb71dad6eb003100e759c3,CARE
@@ -310,7 +310,7 @@ Vick,CarLieah,carlieahvick27@waynestem.org,,,,Edwards,7395838327,6556375278b9800
 Warren,Jymir,jymirwarren31@waynestem.org,Myecca Warren,Mconnorw@gmail.com,252-525-2379,Edwards,7889611331,68cb71dad6eb003100e759ba,4,68cb71dad6eb003100e759ba,LIKE
 Williams,Braylen,braylenwilliams68@waynestem.org,,,,Edwards,3428493168,6556375278b980014b9d5686,4,6556375278b980014b9d5686,SIGN
 Wilson,Deshaun,deshaunwilson58@waynestem.org,Shaniqua wilson,shaniqua_warren22@yahoo.com,919-988-3197,Edwards,9571966258,68cb71dad6eb003100e75995,4,68cb71dad6eb003100e75995,NAME
-Yelverton,Jayden,jaydenyelverton56@waynestem.org,,,,Edwards,4974895656,66ca8094f33fcd0596b1448d,5,66ca8094f33fcd0596b1448d,ABLE
+Yelverton,Jayden,jaydenyelverton56@waynestem.org,,,,Edwards,4974895656,66ca8094f33fcd0596b1448d,4,66ca8094f33fcd0596b1448d,ABLE
 Anguiano,Abigail,abigailanguiano21@waynestem.org,,,,Dohar,6597452321,66ca8094f33fcd0596b1448f,4,66ca8094f33fcd0596b1448f,TOYS
 Barajas,Luna,lunabarajas47@waynestem.org,,,,Dohar,1835799647,66ca8094f33fcd0596b14494,4,66ca8094f33fcd0596b14494,DIME
 Barrett,Charlie,charliebarrett29@waynestem.org,Constance Barrett,chuckcu@yahoo.com,252-902-9229,Dohar,8664877629,68cb71dad6eb003100e75990,4,charliebarrett2,WHAT
@@ -345,10 +345,10 @@ McFarland,Colt,coltmcfarland@waynestem.org,,,,J Davis,8976614283,6556375278b9800
 Melara-Rodriguez,Madelyn,madelynmelara@waynestem.org,,,,J Davis,9364316452,66ca8094f33fcd0596b144a0,5,mmelara,wsa1
 Newberry,William,william.newberry87@waynestem.org,Christopher Newberry,cwnewberry@yahoo.com,951-501-6538,J Davis,2755374187,68cb71dad6eb003100e75977,5,68cb71dad6eb003100e75977,HISSLIST
 Nunez,Nathaniel,nathanielnunez36@waynestem.org,Jairo Nunez,nunez_jairo@yahoo.com,718-536-8568,J Davis,7476937236,68cb71dad6eb003100e759c6,5,nathanielnunez4,HOLDDRUM
-Ponce Cruz,Sophia,sophiaponce58@waynestem.org,,,,J Davis,6132847529,6556375278b980014b9d56ab,EC,,
-Sigmon,Kaitlyn,kaitlynsigmon55@waynestem.org,Brittany Young,Brittanyyoung085@gmail.com,919-584-7084,J Davis,8874764855,68cb71dad6eb003100e7594e,EC,kaitlynsigmon,RELYFILM
-Smith,Ava,avasmith25@waynestem.org,,,,J Davis,3615798325,67044236602a5616e1869664,EC,,
-Wingenroth,Oliver,oliverwingenroth97@waynestem.org,,,,J Davis,6747593197,6556375278b980014b9d563d,EC,orwingenroth,wsa1
+Ponce Cruz,Sophia,sophiaponce58@waynestem.org,,,,J Davis,6132847529,6556375278b980014b9d56ab,5,,
+Sigmon,Kaitlyn,kaitlynsigmon55@waynestem.org,Brittany Young,Brittanyyoung085@gmail.com,919-584-7084,J Davis,8874764855,68cb71dad6eb003100e7594e,5,kaitlynsigmon,RELYFILM
+Smith,Ava,avasmith25@waynestem.org,,,,J Davis,3615798325,67044236602a5616e1869664,5,,
+Wingenroth,Oliver,oliverwingenroth97@waynestem.org,,,,J Davis,6747593197,6556375278b980014b9d563d,5,orwingenroth,wsa1
 Alston,Indiyah,indiyahalston63@waynestem.org,Stefanie Alston,Reneealston74@yahoo.com,919-396-3778,A Smith,3797344163,68cb71dad6eb003100e759b1,5,indiyaha,wsa1
 Arnett,Noah,noaharnett56@waynestem.org,,,,A Smith,4755971756,6556375278b980014b9d5677,5,narnett,wsa1
 Battle,Makenzi,makenzibattle27@waynestem.org,,,,A Smith,9544121927,6556375278b980014b9d569b,5,makenzibattle,wsa24
@@ -357,14 +357,14 @@ Boyd,Cas,casboyd52@waynestem.org,,,,A Smith,2798293952,66ca8094f33fcd0596b1449d,
 Davis,Roman,romandavis42@waynestem.org,,,,A Smith,1473258642,6556375278b980014b9d56b6,5,davisroman,wsa1
 Garcia Limon,Mila,milagarcialimon45@waynestem.org,,,,A Smith,7245182345,66ca8094f33fcd0596b14492,5,milagl,wsa1
 Gonzalez,Kilyan,kilyangonzalez81@waynestem.org,,,,A Smith,2199896781,66ca8094f33fcd0596b144a3,5,kilyang,wsa1
-Graham,Jere'myiah,jere'myiah.graham31@waynestem.org,Paula Graham,P.graham266@gmail.com,919-396-2495,A Smith,7388233431,68cb71dad6eb003100e75947,EC,jere'myiahg,wsa1
+Graham,Jere'myiah,jere'myiah.graham31@waynestem.org,Paula Graham,P.graham266@gmail.com,919-396-2495,A Smith,7388233431,68cb71dad6eb003100e75947,5,jere'myiahg,wsa1
 Matthews,Gabriel,gabrielmatthews37@waynestem.org,Sakinah Rivers,Sakinah.rivers@yahoo.com,919-224-0750,A Smith,6356432837,68cb71dad6eb003100e7599a,5,gmatthews,wsa1
 Mayes-Rodriguez,Isabella,isabellarodriguez37@waynestem.org,,,,A Smith,1855163837,66ca8094f33fcd0596b144a5,5,isabellamr,wsa1
 Flores-Ponce,Meili,meilifloresponce53@waynestem.org,,,,A Smith,9687264853,66ca8094f33fcd0596b144a6,5,meilif,wsa1
-Powell,Ky'Leigh,ky'leighpowell88@waynestem.org,,,,A Smith,1779535988,66ca8094f33fcd0596b144a7,EC,ky'leighpowell,wsa1
-Roa,Braiden,braidenroa58@waynestem.org,,,,A Smith,9565133258,6556375278b980014b9d567c,EC,braidenr,wsa1
-Smith,Gabriel,gabrielsmith62@waynestem.org,,,,A Smith,4985496162,66da09c72442d81ea9e9bc3c,EC,smithgabriel,wsa1
-Zamminer,Nova,novazamminer88@waynestem.org,,,,A Smith,5431312588,66ca8094f33fcd0596b14499,EC,nzamminer,wsa1
+Powell,Ky'Leigh,ky'leighpowell88@waynestem.org,,,,A Smith,1779535988,66ca8094f33fcd0596b144a7,5,ky'leighpowell,wsa1
+Roa,Braiden,braidenroa58@waynestem.org,,,,A Smith,9565133258,6556375278b980014b9d567c,5,braidenr,wsa1
+Smith,Gabriel,gabrielsmith62@waynestem.org,,,,A Smith,4985496162,66da09c72442d81ea9e9bc3c,5,smithgabriel,wsa1
+Zamminer,Nova,novazamminer88@waynestem.org,,,,A Smith,5431312588,66ca8094f33fcd0596b14499,5,nzamminer,wsa1
 Boseman,Cally,callyboseman64@waynestem.org,,,,Lewis,4562518464,6556375278b980014b9d5672,3,callyboseman1,DAYS
 Denton,Auron,aurondenton89@waynestem.org,,,,Lewis,5242769289,6556375278b980014b9d5625,2,aurondenton1,CENT
 Grantham,Wizdom,wizdomgrantham14@waynestem.org,,,,Lewis,6775225814,66ca8094f33fcd0596b144aa,1,wizdomgrantham1,MOST

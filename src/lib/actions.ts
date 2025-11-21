@@ -87,6 +87,16 @@ export const createClass = async (
   data: ClassSchema
 ) => {
   try {
+    if (data.supervisorId) {
+      const existingClassWithSupervisor = await prisma.class.findFirst({
+        where: { supervisorId: data.supervisorId },
+      });
+
+      if (existingClassWithSupervisor) {
+        return { success: false, error: true };
+      }
+    }
+
     await prisma.class.create({
       data,
     });
@@ -104,6 +114,19 @@ export const updateClass = async (
   data: ClassSchema
 ) => {
   try {
+    if (data.supervisorId) {
+      const existingClassWithSupervisor = await prisma.class.findFirst({
+        where: {
+          supervisorId: data.supervisorId,
+          NOT: { id: data.id },
+        },
+      });
+
+      if (existingClassWithSupervisor) {
+        return { success: false, error: true };
+      }
+    }
+
     await prisma.class.update({
       where: {
         id: data.id,
