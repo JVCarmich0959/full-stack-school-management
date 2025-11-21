@@ -1,4 +1,4 @@
-# EduSphere: Full Stack School Management System
+# SchoolLinq: Full Stack School Management System
 
 ![dashboard](./public/dashboard.jpeg)
 
@@ -15,12 +15,6 @@
 ![Clerk](https://img.shields.io/badge/Clerk-6C47FF?style=for-the-badge&logo=clerk&logoColor=white)
 ![Coolify](https://img.shields.io/badge/Coolify-4A90E2?style=for-the-badge&logo=coolify&logoColor=white)
 
-## 📖 Project Overview
-
-EduSphere is a comprehensive School Management System built with Next.js and Tailwind CSS. Inspired by Lama Dev's tutorial, this full-stack application provides a robust solution for managing school operations across different user roles.
-
-### 🎥 Tutorial Credits
-- **Original Tutorial**: [Lama Dev YouTube Tutorial](https://www.youtube.com/watch?v=6sfiAyKy8Jo)
 
 ## 🌟 Features
 
@@ -115,13 +109,8 @@ Contributions are welcome! Please read the contributing guidelines before gettin
 
 This project is open-source and available under the MIT License.
 
-## 🙏 Acknowledgements
 
-- [Lama Dev](https://www.youtube.com/@lamadev) for the incredible tutorial
-- Open-source community
-- All contributors
 
----
 
 **Created by**: Pakagrong Lebel
 **GitHub**: [@pakagronglb](https://github.com/pakagronglb)
