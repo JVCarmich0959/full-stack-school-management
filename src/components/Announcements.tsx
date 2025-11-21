@@ -11,10 +11,14 @@ const Announcements = async () => {
     parent: { students: { some: { parentId: userId } } },
   };
 
+  const today = new Date();
+  const startOfMonth = new Date(today.getFullYear(), today.getMonth(), 1);
+
   const data = await prisma.announcement.findMany({
-    take: 3,
-    orderBy: { date: "desc" },
+    take: 12,
+    orderBy: { date: "asc" },
     where: {
+      date: { gte: startOfMonth },
       ...(!["admin", "guest"].includes(role) && {
         OR: [
           { classId: null },
@@ -24,45 +28,63 @@ const Announcements = async () => {
     },
   });
 
+  const groupedAnnouncements = data.reduce(
+    (acc: Record<string, typeof data>, announcement) => {
+      const monthLabel = announcement.date.toLocaleString("default", {
+        month: "long",
+        year: "numeric",
+      });
+      if (!acc[monthLabel]) {
+        acc[monthLabel] = [];
+      }
+      acc[monthLabel].push(announcement);
+      return acc;
+    },
+    {}
+  );
+
   return (
     <div className="bg-white p-4 rounded-md">
       <div className="flex items-center justify-between">
         <h1 className="text-xl font-semibold">Announcements</h1>
         <span className="text-xs text-gray-400">View All</span>
       </div>
-      <div className="flex flex-col gap-4 mt-4">
-        {data[0] && (
-          <div className="bg-plSkyLight rounded-md p-4">
-            <div className="flex items-center justify-between">
-              <h2 className="font-medium">{data[0].title}</h2>
-              <span className="text-xs text-gray-400 bg-white rounded-md px-1 py-1">
-                {new Intl.DateTimeFormat("en-GB").format(data[0].date)}
-              </span>
-            </div>
-            <p className="text-sm text-gray-400 mt-1">{data[0].description}</p>
-          </div>
+      <div className="flex flex-col gap-5 mt-4">
+        {Object.entries(groupedAnnouncements).length === 0 && (
+          <p className="text-sm text-gray-500">No upcoming announcements.</p>
         )}
-        {data[1] && (
-          <div className="bg-plPurpleLight rounded-md p-4">
-            <div className="flex items-center justify-between">
-              <h2 className="font-medium">{data[1].title}</h2>
-              <span className="text-xs text-gray-400 bg-white rounded-md px-1 py-1">
-                {new Intl.DateTimeFormat("en-GB").format(data[1].date)}
-              </span>
+        {Object.entries(groupedAnnouncements).map(
+          ([monthLabel, announcements]) => (
+            <div key={monthLabel} className="flex flex-col gap-3">
+              <h3 className="text-sm font-semibold text-gray-600 uppercase tracking-wide">
+                {monthLabel}
+              </h3>
+              {announcements.map((announcement, index) => (
+                <div
+                  key={announcement.id}
+                  className={`rounded-md p-4 ${
+                    index % 3 === 0
+                      ? "bg-plSkyLight"
+                      : index % 3 === 1
+                      ? "bg-plPurpleLight"
+                      : "bg-plYellowLight"
+                  }`}
+                >
+                  <div className="flex items-center justify-between gap-3">
+                    <h2 className="font-medium">{announcement.title}</h2>
+                    <span className="text-xs text-gray-500 bg-white rounded-md px-2 py-1">
+                      {new Intl.DateTimeFormat("en-GB").format(
+                        announcement.date
+                      )}
+                    </span>
+                  </div>
+                  <p className="text-sm text-gray-500 mt-1">
+                    {announcement.description}
+                  </p>
+                </div>
+              ))}
             </div>
-            <p className="text-sm text-gray-400 mt-1">{data[1].description}</p>
-          </div>
-        )}
-        {data[2] && (
-          <div className="bg-plYellowLight rounded-md p-4">
-            <div className="flex items-center justify-between">
-              <h2 className="font-medium">{data[2].title}</h2>
-              <span className="text-xs text-gray-400 bg-white rounded-md px-1 py-1">
-                {new Intl.DateTimeFormat("en-GB").format(data[2].date)}
-              </span>
-            </div>
-            <p className="text-sm text-gray-400 mt-1">{data[2].description}</p>
-          </div>
+          )
         )}
       </div>
     </div>

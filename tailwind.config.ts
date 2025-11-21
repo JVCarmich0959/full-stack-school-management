@@ -14,12 +14,12 @@ const config: Config = {
           "conic-gradient(from 180deg at 50% 50%, var(--tw-gradient-stops))",
       },
       colors: {
-        plSky: "#C3EBFA",
-        plSkyLight: "#EDF9FD",
-        plPurple: "#CFCEFF",
-        plPurpleLight: "#F1F0FF",
-        plYellow: "#FAE27C",
-        plYellowLight: "#FEFCE8",
+        plSky: "#c0a95e",
+        plSkyLight: "#98a2ad",
+        plPurple: "#271b70",
+        plPurpleLight: "#98a2ad",
+        plYellow: "#c0a95e",
+        plYellowLight: "#98a2ad",
       },
       keyframes: {
         'fade-in-up': {
