@@ -80,7 +80,7 @@ const AssignmentListPage = async ({ searchParams }: PageProps) => {
   }
   if (teacherId) query.lesson!.teacherId = teacherId;
   if (search) {
-    query.lesson!.subject = { name: { contains: search, mode: "insensitive" } };
+    query.lesson!.subject = { name: { contains: search } };
   }
 
   // Role scoping

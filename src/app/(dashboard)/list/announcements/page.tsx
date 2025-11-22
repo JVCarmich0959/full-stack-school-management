@@ -35,7 +35,7 @@ const AnnouncementListPage = async ({ searchParams }: PageProps) => {
 
   const search = Array.isArray(searchParams.search) ? searchParams.search[0] : searchParams.search;
   if (search) {
-    query.title = { contains: search, mode: "insensitive" };
+    query.title = { contains: search };
   }
 
   // Role-based visibility
