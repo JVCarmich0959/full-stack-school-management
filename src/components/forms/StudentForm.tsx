@@ -2,7 +2,6 @@
 
 import Image from "next/image";
 import { useRouter } from "next/navigation";
-import { CldUploadWidget } from "next-cloudinary";
 
 import { Dispatch, SetStateAction, useEffect, useState } from "react";
 import { toast } from "react-toastify";
@@ -10,21 +9,12 @@ import { useFormState } from "react-dom";
 import { useForm } from "react-hook-form";
 
 import InputField from "../InputField";
+import SafeUploadWidget from "../cloudinary/SafeUploadWidget";
 
 
 import { zodResolver } from "@hookform/resolvers/zod";
-import {
-  studentSchema,
-  StudentSchema,
-  teacherSchema,
-  TeacherSchema,
-} from "@/lib/formValidationSchemas";
-import {
-  createStudent,
-  createTeacher,
-  updateStudent,
-  updateTeacher,
-} from "@/lib/actions";
+import { studentSchema, StudentSchema } from "@/lib/formValidationSchemas";
+import { createStudent, updateStudent } from "@/lib/actions";
 
 const StudentForm = ({
   type,
@@ -108,8 +98,8 @@ const StudentForm = ({
       <span className="text-xs text-gray-400 font-medium">
         Personal Information
       </span>
-      <CldUploadWidget
-        uploadPreset=""
+      <SafeUploadWidget
+        uploadPreset="school"
         onSuccess={(result, { widget }) => {
           setImg(result.info);
           widget.close();
@@ -126,7 +116,7 @@ const StudentForm = ({
             </div>
           );
         }}
-      </CldUploadWidget>
+      </SafeUploadWidget>
       <div className="flex justify-between flex-wrap gap-4">
         <InputField
           label="First Name"

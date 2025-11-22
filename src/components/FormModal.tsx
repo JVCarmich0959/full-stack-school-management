@@ -5,6 +5,7 @@ import {
   deleteClass,
   deleteExam,
   deleteEvent,
+  deleteParent,
   deleteStudent,
   deleteSubject,
   deleteTeacher,
@@ -24,7 +25,7 @@ const deleteActionMap = {
   teacher: deleteTeacher,
   student: deleteStudent,
   exam: deleteExam,
-  parent: deleteSubject,
+  parent: deleteParent,
   lesson: deleteSubject,
   assignment: deleteSubject,
   result: deleteSubject,
@@ -57,6 +58,9 @@ const EventForm = dynamic(() => import("./forms/EventForm"), {
   loading: () => <h1>Loading...</h1>,
 });
 const AnnouncementForm = dynamic(() => import("./forms/AnnouncementForm"), {
+  loading: () => <h1>Loading...</h1>,
+});
+const ParentForm = dynamic(() => import("./forms/ParentForm"), {
   loading: () => <h1>Loading...</h1>,
 });
 
@@ -124,6 +128,9 @@ const forms: {
       setOpen={setOpen}
       relatedData={relatedData}
     />
+  ),
+  parent: (setOpen, type, data) => (
+    <ParentForm type={type} data={data} setOpen={setOpen} />
   ),
   // Default form for undefined tables
   default: (setOpen, type, data, relatedData, table) => (

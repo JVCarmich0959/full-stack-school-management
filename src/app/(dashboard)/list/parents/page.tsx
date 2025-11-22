@@ -9,11 +9,10 @@ import EmptyState from "@/components/ui/EmptyState";
 import PageHeader from "@/components/ui/PageHeader";
 import ParentFilters from "@/components/ParentFilters";
 import { getSessionRole } from "@/lib/devAuth";
-import prisma from "@/lib/prisma";
 import { ITEM_PER_PAGE } from "@/lib/settings";
-import { Parent, Prisma, Student } from "@prisma/client";
-
-type ParentList = Parent & { students: Student[] };
+import type { ParentWithStudents } from "@/server/repositories/parentRepository";
+import { getParentDirectory } from "@/server/services/parentService";
+import type { GuardianFilter } from "@/server/types/filters";
 
 const ParentListPage = async ({
   searchParams,
@@ -37,7 +36,7 @@ const ParentListPage = async ({
       : []),
   ];
 
-  const renderRow = (item: ParentList) => {
+  const renderRow = (item: ParentWithStudents) => {
     const guardianNames = Array.from(
       new Set(
         item.students
@@ -123,111 +122,34 @@ const ParentListPage = async ({
 
   const { page, ...queryParams } = searchParams;
   const p = page ? parseInt(page, 10) : 1;
-
-  const gradeFilter = queryParams.grade?.trim();
-  const homeroomFilter = queryParams.homeroom?.trim();
-  const guardianFilter = queryParams.guardian?.trim();
-
-  const query: Prisma.ParentWhereInput = {};
   const searchValue = queryParams.search?.trim();
+  const gradeFilter = queryParams.grade ? parseInt(queryParams.grade, 10) : undefined;
+  const homeroomFilter = queryParams.homeroom?.trim();
+  const guardianFilterParam = queryParams.guardian?.trim();
+  const guardianFilter: GuardianFilter | undefined =
+    guardianFilterParam === "complete" || guardianFilterParam === "missing"
+      ? guardianFilterParam
+      : undefined;
 
-  if (searchValue) {
-    query.OR = [
-      { name: { contains: searchValue, mode: "insensitive" } },
-      { surname: { contains: searchValue, mode: "insensitive" } },
-      {
-        students: {
-          some: {
-            OR: [
-              { firstName: { contains: searchValue, mode: "insensitive" } },
-              { lastName: { contains: searchValue, mode: "insensitive" } },
-            ],
-          },
-        },
-      },
-    ];
-  }
+  const directory = await getParentDirectory({
+    page: p,
+    pageSize: ITEM_PER_PAGE,
+    search: searchValue,
+    grade: Number.isFinite(gradeFilter) ? gradeFilter : undefined,
+    homeroom: homeroomFilter,
+    guardian: guardianFilter,
+  });
 
-  const studentFilters: Prisma.StudentWhereInput = {};
-
-  if (gradeFilter && !Number.isNaN(parseInt(gradeFilter, 10))) {
-    studentFilters.gradeLevel = parseInt(gradeFilter, 10);
-  }
-
-  if (homeroomFilter) {
-    studentFilters.homeroom = homeroomFilter;
-  }
-
-  if (guardianFilter === "complete") {
-    studentFilters.AND = [
-      ...(studentFilters.AND ?? []),
-      { guardianEmail: { not: null } },
-      { guardianEmail: { not: "" } },
-    ];
-  } else if (guardianFilter === "missing") {
-    studentFilters.OR = [
-      ...(studentFilters.OR ?? []),
-      { guardianEmail: null },
-      { guardianEmail: "" },
-    ];
-  }
-
-  if (Object.keys(studentFilters).length > 0) {
-    query.students = { some: studentFilters };
-  }
-
-  const [data, count, studentsWithContacts, studentsMissingContacts, gradeRows, homeroomRows] = await prisma.$transaction([
-    prisma.parent.findMany({
-      where: query,
-      include: {
-        students: true,
-      },
-      orderBy: {
-        createdAt: "desc",
-      },
-      take: ITEM_PER_PAGE,
-      skip: ITEM_PER_PAGE * (p - 1),
-    }),
-    prisma.parent.count({ where: query }),
-    prisma.student.count({
-      where: {
-        guardianEmail: {
-          not: null,
-        },
-        NOT: {
-          guardianEmail: "",
-        },
-      },
-    }),
-    prisma.student.count({
-      where: {
-        OR: [{ guardianEmail: null }, { guardianEmail: "" }],
-      },
-    }),
-    prisma.grade.findMany({
-      select: { level: true },
-      orderBy: { level: "asc" },
-    }),
-    prisma.student.findMany({
-      where: {
-        homeroom: {
-          not: null,
-        },
-      },
-      select: { homeroom: true },
-      distinct: ["homeroom"],
-      orderBy: { homeroom: "asc" },
-    }),
-  ]);
-
-  const totalStudentsTracked = studentsWithContacts + studentsMissingContacts;
-  const coverageRate = totalStudentsTracked
-    ? Math.round((studentsWithContacts / totalStudentsTracked) * 100)
-    : 0;
-  const gradeOptions = gradeRows.map((grade) => grade.level);
-  const homeroomOptions = homeroomRows
-    .map((row) => row.homeroom?.trim())
-    .filter((value): value is string => Boolean(value));
+  const data = directory.parents;
+  const count = directory.pagination.total;
+  const studentsWithContacts = directory.metrics.studentsWithContacts;
+  const studentsMissingContacts = directory.metrics.studentsMissingContacts;
+  const coverageRate = directory.metrics.coverageRate;
+  const gradeOptions = directory.filterOptions.grades;
+  const homeroomOptions = directory.filterOptions.homerooms;
+  const dataQuality = directory.dataQuality;
+  const totalStudentsTracked =
+    studentsWithContacts + studentsMissingContacts;
 
   return (
     <div className="space-y-6">
@@ -291,6 +213,45 @@ const ParentListPage = async ({
             </p>
           </div>
         </dl>
+      </Card>
+      <Card className="space-y-4">
+        <div>
+          <p className="text-xs uppercase tracking-[0.3em] text-[color:var(--color-text-muted)]">
+            Data quality alerts
+          </p>
+          <p className="text-base font-semibold text-[color:var(--color-text-primary)]">
+            Guardian contact hygiene
+          </p>
+        </div>
+        <div className="grid gap-4 text-sm sm:grid-cols-2">
+          <div className="rounded-2xl border border-[var(--color-border)] bg-[var(--color-surface-muted)] px-4 py-3">
+            <p className="text-xs uppercase tracking-[0.2em] text-[color:var(--color-text-muted)]">
+              Missing guardian emails
+            </p>
+            <p className="text-2xl font-semibold text-[color:var(--color-text-primary)]">
+              {dataQuality.missingEmails}
+            </p>
+            <p className="text-xs text-[color:var(--color-text-muted)]">
+              Encourage families to provide an email for digital access
+            </p>
+          </div>
+          <div className="rounded-2xl border border-[var(--color-border)] bg-[var(--color-surface-muted)] px-4 py-3">
+            <p className="text-xs uppercase tracking-[0.2em] text-[color:var(--color-text-muted)]">
+              Missing guardian phones
+            </p>
+            <p className="text-2xl font-semibold text-[color:var(--color-text-primary)]">
+              {dataQuality.missingPhones}
+            </p>
+            <p className="text-xs text-[color:var(--color-text-muted)]">
+              Capture at least one reachable number per household
+            </p>
+          </div>
+        </div>
+        {dataQuality.missingEmails === 0 && dataQuality.missingPhones === 0 && (
+          <p className="text-xs text-[color:var(--color-text-muted)]">
+            All guardians on file have both email and phone contact details. 🎉
+          </p>
+        )}
       </Card>
 
       <Card className="space-y-4">

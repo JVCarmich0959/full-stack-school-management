@@ -97,6 +97,8 @@ npx prisma migrate dev --name init_postgres
 npx prisma db seed
 ```
 
+> The Prisma seeder lives at [`/prisma/seed.ts`](./prisma/seed.ts). Update the mock data or randomized fixtures there before running `npx prisma db seed` to refresh your local SIS dataset.
+
 5. Run the development server
 
 ```bash

@@ -8,11 +8,9 @@ import TableSearch from "@/components/TableSearch";
 import ListPageShell from "@/components/ui/ListPageShell";
 
 import { getSessionRole } from "@/lib/devAuth";
-import prisma from "@/lib/prisma";
 import { ITEM_PER_PAGE } from "@/lib/settings";
-import { Class, Prisma, Student } from "@prisma/client";
-
-type StudentList = Student & { class: Class };
+import type { StudentWithClass } from "@/server/repositories/studentRepository";
+import { getStudentDirectory } from "@/server/services/studentService";
 
 const StudentListPage = async ({
   searchParams,
@@ -56,7 +54,7 @@ const StudentListPage = async ({
       : []),
   ];
 
-  const renderRow = (item: StudentList) => (
+  const renderRow = (item: StudentWithClass) => (
     <tr
       key={item.id}
       className="border-b border-gray-200 even:bg-slate-50 text-sm hover:bg-plPurpleLight"
@@ -97,47 +95,23 @@ const StudentListPage = async ({
   );
 
   const { page, ...queryParams } = searchParams;
+  const p = page ? parseInt(page as string, 10) : 1;
+  const searchValue = queryParams.search?.trim();
+  const gradeFilter = queryParams.grade
+    ? parseInt(queryParams.grade, 10)
+    : undefined;
+  const teacherFilter = queryParams.teacherId?.trim();
 
-  const p = page ? parseInt(page) : 1;
+  const directory = await getStudentDirectory({
+    page: p,
+    pageSize: ITEM_PER_PAGE,
+    search: searchValue,
+    grade: Number.isFinite(gradeFilter) ? gradeFilter : undefined,
+    teacherId: teacherFilter,
+  });
 
-  // URL PARAMS CONDITION
-
-  const query: Prisma.StudentWhereInput = {};
-
-  if (queryParams) {
-    for (const [key, value] of Object.entries(queryParams)) {
-      if (value !== undefined) {
-        switch (key) {
-          case "teacherId":
-            query.class = {
-              lessons: {
-                some: {
-                  teacherId: value,
-                },
-              },
-            };
-            break;
-          case "search":
-            query.name = { contains: value };
-            break;
-          default:
-            break;
-        }
-      }
-    }
-  }
-
-  const [data, count] = await prisma.$transaction([
-    prisma.student.findMany({
-      where: query,
-      include: {
-        class: true,
-      },
-      take: ITEM_PER_PAGE,
-      skip: ITEM_PER_PAGE * (p - 1),
-    }),
-    prisma.student.count({ where: query }),
-  ]);
+  const data = directory.students;
+  const count = directory.pagination.total;
 
   const toolbar = (
     <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
