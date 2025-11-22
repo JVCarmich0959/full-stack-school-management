@@ -117,7 +117,7 @@ const StudentListPage = async ({
             };
             break;
           case "search":
-            query.name = { contains: value, mode: "insensitive" };
+            query.fullNameLower = { contains: value.toLowerCase() };
             break;
           default:
             break;
