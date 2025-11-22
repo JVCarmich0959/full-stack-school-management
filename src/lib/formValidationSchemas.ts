@@ -1,5 +1,17 @@
 import { z } from "zod";
 
+const optionalNumberField = z
+  .preprocess(
+    (value) => {
+      if (value === "" || value === null || value === undefined) {
+        return undefined;
+      }
+      return value;
+    },
+    z.coerce.number().int().min(1)
+  )
+  .optional();
+
 export const subjectSchema = z.object({
   id: z.coerce.number().optional(),
   name: z.string().min(1, { message: "Subject name is required!" }),
@@ -96,3 +108,24 @@ export const examSchema = z.object({
 });
 
 export type ExamSchema = z.infer<typeof examSchema>;
+
+export const eventSchema = z.object({
+  id: z.coerce.number().optional(),
+  title: z.string().min(1, { message: "Event title is required!" }),
+  description: z.string().min(1, { message: "Description is required!" }),
+  startTime: z.coerce.date({ message: "Start time is required!" }),
+  endTime: z.coerce.date({ message: "End time is required!" }),
+  classId: optionalNumberField,
+});
+
+export type EventSchema = z.infer<typeof eventSchema>;
+
+export const announcementSchema = z.object({
+  id: z.coerce.number().optional(),
+  title: z.string().min(1, { message: "Announcement title is required!" }),
+  description: z.string().min(1, { message: "Description is required!" }),
+  date: z.coerce.date({ message: "Date is required!" }),
+  classId: optionalNumberField,
+});
+
+export type AnnouncementSchema = z.infer<typeof announcementSchema>;

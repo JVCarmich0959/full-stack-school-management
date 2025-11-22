@@ -3,11 +3,18 @@
 @tailwind utilities;
 
 :root {
-  --siteBackgroundColor: #271b70;
-  --paragraphMediumColor: #98a2ad;
-  --accentPrimary: #c0a95e;
-  --accentSecondary: #98a2ad;
-  --accentDark: #271b70;
+  color-scheme: light;
+  --color-page-bg: #f5f6fb;
+  --color-surface: #ffffff;
+  --color-surface-muted: #eef0f6;
+  --color-sidebar-bg: #ffffff;
+  --color-card: #ffffff;
+  --color-border: rgba(152, 162, 173, 0.35);
+  --color-text-primary: #271b70;
+  --color-text-muted: #5d6482;
+  --color-icon: #98a2ad;
+  --color-accent-primary: #c0a95e;
+  --color-accent-secondary: #98a2ad;
   --heading-font: "Poppins", "Helvetica Neue", Helvetica, Arial, sans-serif;
   --body-font: "Poppins", "Helvetica Neue", Helvetica, Arial, sans-serif;
   --base-font-size: 16px;
@@ -16,20 +23,37 @@
   --sqs-site-max-width: 1200px;
 }
 
+:root[data-theme="dark"] {
+  color-scheme: dark;
+  --color-page-bg: #0f0b2c;
+  --color-surface: #1d1542;
+  --color-surface-muted: #201752;
+  --color-sidebar-bg: #140d38;
+  --color-card: #1d1542;
+  --color-border: rgba(152, 162, 173, 0.4);
+  --color-text-primary: #f6f4ff;
+  --color-text-muted: #cdd2dc;
+  --color-icon: #cdd2dc;
+  --color-accent-primary: #c0a95e;
+  --color-accent-secondary: #98a2ad;
+}
+
 html {
   font-size: var(--base-font-size);
   font-family: var(--body-font);
   -webkit-text-size-adjust: 100%;
+  scroll-behavior: smooth;
 }
 
 body {
   min-height: 100vh;
   margin: 0;
-  background-color: var(--siteBackgroundColor);
-  color: var(--paragraphMediumColor);
+  background-color: var(--color-page-bg);
+  color: var(--color-text-primary);
   font-family: var(--body-font);
   line-height: 1.5;
   -webkit-font-smoothing: antialiased;
+  transition: background-color 200ms ease, color 200ms ease;
 }
 
 .site-wrapper,
@@ -41,7 +65,7 @@ body {
 }
 
 .page-section {
-  color: var(--paragraphMediumColor);
+  color: var(--color-text-muted);
 }
 
 .page-section > .content-wrapper {
@@ -82,18 +106,18 @@ body {
   width: 100% !important;
   border: none !important;
   font-family: var(--body-font) !important;
-  background-color: #271b70 !important;
-  color: #98a2ad !important;
+  background-color: var(--color-surface) !important;
+  color: var(--color-text-primary) !important;
 }
 
 .react-calendar__navigation__label__labelText {
   font-weight: 600;
-  color: #c0a95e !important;
+  color: var(--color-accent-primary) !important;
 }
 
 .react-calendar__tile--active {
-  background-color: #c0a95e !important;
-  color: #271b70 !important;
+  background-color: var(--color-accent-primary) !important;
+  color: var(--color-sidebar-bg) !important;
 }
 
 .rbc-btn-group:first-child {
@@ -117,13 +141,13 @@ body {
 }
 
 .rbc-toolbar button.rbc-active {
-  background-color: #c0a95e !important;
+  background-color: var(--color-accent-primary) !important;
   color: #271b70 !important;
   box-shadow: none !important;
 }
 
 .rbc-time-view {
-  border-color: #98a2ad !important;
+  border-color: var(--color-border) !important;
 }
 
 .rbc-time-header {
@@ -131,12 +155,12 @@ body {
 }
 
 .rbc-time-content {
-  border: 1px solid rgba(152, 162, 173, 0.4) !important;
+  border: 1px solid var(--color-border) !important;
 }
 
 .rbc-time-gutter.rbc-time-column {
   font-size: 12px !important;
-  color: #98a2ad !important;
+  color: var(--color-text-muted) !important;
 }
 
 .rbc-time-gutter.rbc-time-column .rbc-timeslot-group {
@@ -144,12 +168,12 @@ body {
 }
 
 .rbc-timeslot-group {
-  background-color: rgba(39, 27, 112, 0.45) !important;
+  background-color: rgba(39, 27, 112, 0.18) !important;
 }
 
 .rbc-day-slot {
   font-size: 14px !important;
-  color: #98a2ad !important;
+  color: var(--color-text-muted) !important;
 }
 
 .rbc-event {

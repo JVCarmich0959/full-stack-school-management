@@ -2,6 +2,8 @@ import type { Metadata } from "next";
 
 import { ToastContainer } from "react-toastify";
 
+import { ThemeProvider } from "@/components/theme/ThemeProvider";
+
 import "react-toastify/dist/ReactToastify.css";
 import "./globals.css";
 
@@ -16,10 +18,12 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" className="h-full">
-      <body className="min-h-full font-sans antialiased bg-[#F7F8FA] text-gray-900">
-        {children}
-        <ToastContainer position="bottom-right" theme="dark" />
+    <html lang="en" className="h-full" suppressHydrationWarning data-theme="light">
+      <body className="min-h-full font-sans antialiased">
+        <ThemeProvider>
+          {children}
+          <ToastContainer position="bottom-right" theme="dark" />
+        </ThemeProvider>
       </body>
     </html>
   );

@@ -1,16 +1,19 @@
 "use client";
 
 import {
+  deleteAnnouncement,
   deleteClass,
   deleteExam,
+  deleteEvent,
   deleteStudent,
   deleteSubject,
   deleteTeacher,
 } from "@/lib/actions";
+import clsx from "clsx";
 import dynamic from "next/dynamic";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
-import { Dispatch, SetStateAction, useEffect, useState } from "react";
+import { Dispatch, ReactNode, SetStateAction, useEffect, useState } from "react";
 import { useFormState } from "react-dom";
 import { toast } from "react-toastify";
 import { FormContainerProps } from "./FormContainer";
@@ -26,8 +29,8 @@ const deleteActionMap = {
   assignment: deleteSubject,
   result: deleteSubject,
   attendance: deleteSubject,
-  event: deleteSubject,
-  announcement: deleteSubject,
+  event: deleteEvent,
+  announcement: deleteAnnouncement,
 };
 
 // Implementation of Lazy Loading
@@ -50,123 +53,12 @@ const ClassForm = dynamic(() => import("./forms/ClassForm"), {
 const ExamForm = dynamic(() => import("./forms/ExamForm"), {
   loading: () => <h1>Loading...</h1>,
 });
-// Slug
-const EventForm = ({ 
-  type, 
-  data, 
-  setOpen, 
-  relatedData 
-}: { 
-  type: "create" | "update", 
-  data?: any, 
-  setOpen: Dispatch<SetStateAction<boolean>>, 
-  relatedData?: any 
-}) => {
-  return (
-    <form className="space-y-4">
-      <div>
-        <label className="block text-sm font-medium text-gray-700">
-          Event Name
-        </label>
-        <input 
-          type="text" 
-          className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"
-          placeholder="Enter event name"
-        />
-      </div>
-      <div>
-        <label className="block text-sm font-medium text-gray-700">
-          Event Date
-        </label>
-        <input 
-          type="date" 
-          className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"
-        />
-      </div>
-      <div className="flex justify-end space-x-2">
-        <button 
-          type="button" 
-          onClick={() => setOpen(false)} 
-          className="px-4 py-2 bg-gray-200 text-gray-800 rounded-md"
-        >
-          Cancel
-        </button>
-        <button 
-          type="submit" 
-          className="px-4 py-2 bg-blue-500 text-white rounded-md"
-        >
-          {type === 'create' ? 'Create Event' : 'Update Event'}
-        </button>
-      </div>
-    </form>
-  );
-};
-
-// Slug
-const AnnouncementForm = ({ 
-  type, 
-  data, 
-  setOpen, 
-  relatedData 
-}: { 
-  type: "create" | "update", 
-  data?: any, 
-  setOpen: Dispatch<SetStateAction<boolean>>, 
-  relatedData?: any 
-}) => {
-  return (
-    <form className="space-y-4">
-      <div>
-        <label className="block text-sm font-medium text-gray-700">
-          Announcement Title
-        </label>
-        <input 
-          type="text" 
-          className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"
-          placeholder="Enter announcement title"
-        />
-      </div>
-      <div>
-        <label className="block text-sm font-medium text-gray-700">
-          Announcement Content
-        </label>
-        <textarea 
-          rows={4}
-          className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"
-          placeholder="Enter announcement details"
-        />
-      </div>
-      <div>
-        <label className="block text-sm font-medium text-gray-700">
-          Target Audience
-        </label>
-        <select 
-          className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"
-        >
-          <option>All</option>
-          <option>Students</option>
-          <option>Teachers</option>
-          <option>Parents</option>
-        </select>
-      </div>
-      <div className="flex justify-end space-x-2">
-        <button 
-          type="button" 
-          onClick={() => setOpen(false)} 
-          className="px-4 py-2 bg-gray-200 text-gray-800 rounded-md"
-        >
-          Cancel
-        </button>
-        <button 
-          type="submit" 
-          className="px-4 py-2 bg-blue-500 text-white rounded-md"
-        >
-          {type === 'create' ? 'Create Announcement' : 'Update Announcement'}
-        </button>
-      </div>
-    </form>
-  );
-};
+const EventForm = dynamic(() => import("./forms/EventForm"), {
+  loading: () => <h1>Loading...</h1>,
+});
+const AnnouncementForm = dynamic(() => import("./forms/AnnouncementForm"), {
+  loading: () => <h1>Loading...</h1>,
+});
 
 const forms: {
   [key: string]: (
@@ -247,7 +139,8 @@ const FormModal = ({
   data,
   id,
   relatedData,
-}: FormContainerProps & { relatedData?: any }) => {
+  trigger,
+}: FormContainerProps & { relatedData?: any; trigger?: ReactNode }) => {
   const size = type === "create" ? "w-8 h-8" : "w-7 h-7";
   const bgColor =
     type === "create"
@@ -294,10 +187,13 @@ const FormModal = ({
   return (
     <>
       <button
-        className={`${size} flex items-center justify-center rounded-full ${bgColor}`}
+        className={clsx(
+          "flex items-center justify-center rounded-full transition focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--color-accent-secondary)]",
+          trigger ? "px-3 py-2" : `${size} ${bgColor}`
+        )}
         onClick={() => setOpen(true)}
       >
-        <Image src={`/${type}.png`} alt="" width={16} height={16} />
+        {trigger ?? <Image src={`/${type}.png`} alt="" width={16} height={16} />}
       </button>
       {open && (
         <div className="w-screen h-screen absolute left-0 top-0 bg-black bg-opacity-60 z-50 flex items-center justify-center">

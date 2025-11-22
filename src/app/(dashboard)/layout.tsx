@@ -10,22 +10,27 @@ export default function DashboardLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <div className="h-screen flex">
-      {/* Left Sidebar */}
-      <div className="w-[14%] md:w-[8%] lg:w-[16%] xl:w-[14%] p-4">
-        <Link
-          href="/"
-          className="flex items-center justify-center lg:justify-start gap-2"
-        >
-          <Image src="/logo.png" alt="logo" width={32} height={32} />
-          <span className="hidden lg:block font-bold">ScholarLinq</span>
-        </Link>
-        <Menu />
-      </div>
-      {/* Right Sidebar */}
-      <div className="w-[86%] md:w-[92%] lg:w-[84%] xl:w-[86%] bg-[#F7F8FA] overflow-scroll flex flex-col">
-        <Navbar />
-        {children}
+    <div className="min-h-screen bg-[var(--color-page-bg)] text-[color:var(--color-text-primary)]">
+      <div className="mx-auto flex min-h-screen w-full max-w-screen-2xl">
+        {/* Sidebar */}
+        <aside className="flex w-20 flex-col border-r border-[var(--color-border)] bg-[var(--color-sidebar-bg)] px-3 py-6 text-sm text-[color:var(--color-text-muted)] sm:w-48 lg:w-64">
+          <Link
+            href="/"
+            className="flex items-center justify-center gap-2 rounded-full bg-[var(--color-surface)] px-3 py-2 text-sm font-semibold text-[color:var(--color-text-primary)] shadow-sm transition hover:opacity-90 lg:justify-start"
+          >
+            <Image src="/logo.png" alt="logo" width={28} height={28} />
+            <span className="hidden lg:block">ScholarLinq</span>
+          </Link>
+          <Menu />
+        </aside>
+
+        {/* Main content */}
+        <div className="flex flex-1 flex-col bg-[var(--color-page-bg)]">
+          <Navbar />
+          <main className="flex-1 overflow-y-auto px-4 pb-10 pt-4 sm:px-6 lg:px-10">
+            <div className="mx-auto flex w-full max-w-6xl flex-col gap-6">{children}</div>
+          </main>
+        </div>
       </div>
     </div>
   );

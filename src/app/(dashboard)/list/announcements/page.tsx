@@ -3,6 +3,8 @@ import FormContainer from "@/components/FormContainer";
 import Pagination from "@/components/Pagination";
 import Table from "@/components/Table";
 import TableSearch from "@/components/TableSearch";
+import EmptyState from "@/components/ui/EmptyState";
+import ListPageShell from "@/components/ui/ListPageShell";
 import { DEV_USER_ID, getSessionRole } from "@/lib/devAuth";
 import prisma from "@/lib/prisma";
 import { ITEM_PER_PAGE } from "@/lib/settings";
@@ -82,35 +84,53 @@ const AnnouncementListPage = async ({ searchParams }: PageProps) => {
     </tr>
   );
 
-  return (
-    <div className="bg-white p-4 rounded-md flex-1 m-4 mt-0">
-      {/* TOP */}
-      <div className="flex items-center justify-between">
-        <h1 className="hidden md:block text-lg font-semibold">All Announcements</h1>
-        <div className="flex flex-col md:flex-row items-center gap-4 w-full md:w-auto">
-          <TableSearch />
-          <div className="flex items-center gap-4 self-end">
-            <button className="w-8 h-8 flex items-center justify-center rounded-full bg-plYellow" aria-label="Filter">
-              <Image src="/filter.png" alt="" width={14} height={14} />
-            </button>
-            <button className="w-8 h-8 flex items-center justify-center rounded-full bg-plYellow" aria-label="Sort">
-              <Image src="/sort.png" alt="" width={14} height={14} />
-            </button>
-            {role === "admin" && <FormContainer table="announcement" type="create" />}
-          </div>
-        </div>
+  const toolbar = (
+    <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+      <TableSearch placeholder="Search announcements..." />
+      <div className="flex items-center gap-2 text-xs">
+        <button
+          type="button"
+          className="inline-flex items-center gap-2 rounded-full border border-[var(--color-border)] px-3 py-2 font-medium text-[color:var(--color-text-primary)] transition hover:border-[var(--color-accent-secondary)]"
+        >
+          <Image src="/filter.png" alt="" width={14} height={14} />
+          Filters
+        </button>
+        <button
+          type="button"
+          className="inline-flex items-center gap-2 rounded-full border border-[var(--color-border)] px-3 py-2 font-medium text-[color:var(--color-text-primary)] transition hover:border-[var(--color-accent-secondary)]"
+        >
+          <Image src="/sort.png" alt="" width={14} height={14} />
+          Sort
+        </button>
       </div>
-
-      {/* LIST */}
-      {data.length ? (
-        <Table columns={columns} renderRow={renderRow} data={data} />
-      ) : (
-        <div className="text-sm text-gray-500 p-8 text-center">No announcements match your filters.</div>
-      )}
-
-      {/* PAGINATION */}
-      <Pagination page={p} count={count} />
     </div>
+  );
+
+  return (
+    <ListPageShell
+      title="Announcements"
+      subtitle="Share timely updates with specific classes or the entire community."
+      actions={
+        role === "admin" && (
+          <FormContainer table="announcement" type="create">
+            <span className="inline-flex items-center gap-2 rounded-full bg-[var(--color-accent-primary)] px-4 py-2 font-semibold text-[#271b70] shadow-sm transition hover:opacity-90">
+              <Image src="/create.png" alt="" width={14} height={14} />
+              New announcement
+            </span>
+          </FormContainer>
+        )
+      }
+      toolbar={toolbar}
+    >
+      <>
+        {data.length ? (
+          <Table columns={columns} renderRow={renderRow} data={data} />
+        ) : (
+          <EmptyState title="No announcements" description="Try adjusting your search or filters to see announcements." />
+        )}
+        <Pagination page={p} count={count} />
+      </>
+    </ListPageShell>
   );
 };
 

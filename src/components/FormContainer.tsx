@@ -1,3 +1,5 @@
+import { ReactNode } from "react";
+
 import prisma from "@/lib/prisma";
 import { DEV_USER_ID, getSessionRole } from "@/lib/devAuth";
 
@@ -20,9 +22,16 @@ export type FormContainerProps = {
   type: "create" | "update" | "delete";
   data?: any;
   id?: number | string;
+  children?: ReactNode;
 };
 
-const FormContainer = async ({ table, type, data, id }: FormContainerProps) => {
+const FormContainer = async ({
+  table,
+  type,
+  data,
+  id,
+  children,
+}: FormContainerProps) => {
   let relatedData = {};
 
   const role = getSessionRole();
@@ -69,6 +78,14 @@ const FormContainer = async ({ table, type, data, id }: FormContainerProps) => {
         });
         relatedData = { lessons: examLessons };
         break;
+      case "event":
+      case "announcement":
+        const eventClasses = await prisma.class.findMany({
+          select: { id: true, name: true },
+          orderBy: { name: "asc" },
+        });
+        relatedData = { classes: eventClasses };
+        break;
 
       default:
         break;
@@ -83,6 +100,7 @@ const FormContainer = async ({ table, type, data, id }: FormContainerProps) => {
         data={data}
         id={id}
         relatedData={relatedData}
+        trigger={children}
       />
     </div>
   );

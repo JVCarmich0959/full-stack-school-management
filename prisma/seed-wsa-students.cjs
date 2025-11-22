@@ -1,8 +1,10 @@
-const { PrismaClient, Day, UserSex } = require("@prisma/client");
+const { PrismaClient } = require("@prisma/client");
 const fs = require("fs");
 const path = require("path");
 
 const prisma = new PrismaClient();
+const DAY_VALUES = ["MONDAY", "TUESDAY", "WEDNESDAY", "THURSDAY", "FRIDAY"];
+const SEX_VALUES = ["MALE", "FEMALE"];
 
 function parseCsvLine(line) {
   const values = [];
@@ -73,22 +75,52 @@ function readStudentCsv() {
     const gradeLevel = normalizeGradeLevel(row["student_grade_level"]);
 
     rows.push({
-      firstName: row["First Name"],
-      lastName: row["Last Name"],
-      email: row["Student Email"],
-      guardianName: row["Parent/Guardian Name"] || undefined,
-      guardianEmail: row["Parent/Guardian Email"] || undefined,
-      guardianPhone: row["Parent/Guardian Phone"] || undefined,
-      teacher: normalizeTeacherName(row["Teacher"]),
-      testingId: row["Student_testing_ID"] || undefined,
-      cleverId: row["student_Clever_ID"],
+      firstName: getRowValue(row, "First Name", "First_Name", "first_name"),
+      lastName: getRowValue(row, "Last Name", "Last_Name", "last_name"),
+      email: getRowValue(row, "Student Email", "Student_Email", "student_email"),
+      guardianName: getRowValue(
+        row,
+        "Parent/Guardian Name",
+        "Parent_Name",
+        "guardian_name",
+        "parent_guardian_name"
+      ),
+      guardianEmail: getRowValue(
+        row,
+        "Parent/Guardian Email",
+        "Parent_Email",
+        "guardian_email",
+        "parent_guardian_email"
+      ),
+      guardianPhone: getRowValue(
+        row,
+        "Parent/Guardian Phone",
+        "Parent_Phone",
+        "guardian_phone",
+        "parent_guardian_phone"
+      ),
+      teacher: normalizeTeacherName(getRowValue(row, "Teacher", "teacher")),
+      testingId: getRowValue(row, "Student_testing_ID", "student_testing_id"),
+      cleverId: getRowValue(row, "Student_Clever_ID", "student_Clever_ID", "student_clever_id"),
       gradeLevel,
-      esparkUsername: row["eSpark_Username"] || undefined,
-      esparkPassword: row["eSpark_Password"] || undefined,
+      esparkUsername: getRowValue(row, "eSpark_Username", "espark_username"),
+      esparkPassword: getRowValue(row, "eSpark_Password", "espark_password"),
     });
   }
 
   return rows;
+}
+
+function getRowValue(row, ...keys) {
+  for (const key of keys) {
+    if (key in row) {
+      const value = row[key];
+      if (value !== undefined && value !== "") {
+        return value;
+      }
+    }
+  }
+  return undefined;
 }
 
 function makeDate(year, month, day, hour = 8, minute = 0) {
@@ -339,43 +371,366 @@ function gradeLabel(gradeLevel) {
 }
 
 function teacherGradeKey(teacherName, gradeLevel) {
-  const normalizedName = normalizeTeacherName(teacherName) || "Teacher";
-  const normalizedGrade = Number.isFinite(gradeLevel) ? gradeLevel : "general";
-  return `${normalizedName}|${normalizedGrade}`;
+  const normalizedName = normalizeTeacherName(teacherName);
+  if (normalizedName) {
+    return normalizedName;
+  }
+  const normalizedGrade = Number.isFinite(gradeLevel) ? gradeLabel(gradeLevel) : "General";
+  return `Teacher ${normalizedGrade}`;
 }
 
-const TEACHER_EMAIL_OVERRIDES = {
-  "alycia-smith": "alycia.smith@waynestem.org",
-  "lisa-beckett": "lisa.beckett@waynestem.org",
-  "jennifer-davis": "jennifer.davis@waynestem.org",
-  "jazmine-smith": "jazmine.smith@waynestem.org",
-  "barbara-pollard": "barbara.pollard@waynestem.org",
-  "makenzie-bridgers": "makenzie.bridgers@waynestem.org",
-  "taylor-dohar": "taylor.dohar@waynestem.org",
-  "hollie-danis": "hollie.danis@waynestem.org",
-  "tenisha-mcclain": "tenisha.mcclain@waynestem.org",
-  "sherri-fortner": "sherri.fortner@waynestem.org",
-  "fortner": "sherri.fortner@waynestem.org",
-  "madison-gibson": "madison.gibson@waynestem.org",
-  "gibson": "madison.gibson@waynestem.org",
-  "stephanie-ham": "stephanie.ham@waynestem.org",
-  "ham": "stephanie.ham@waynestem.org",
-  "krystal-helms": "krystal.helms@waynestem.org",
-  "helms": "krystal.helms@waynestem.org",
-  "katherine-mello": "katherine.mello@waynestem.org",
-  "mello": "katherine.mello@waynestem.org",
-  "courtney-wingenroth": "courtney.wingenroth@waynestem.org",
-  "wingenroth": "courtney.wingenroth@waynestem.org",
-  "shannan-woresly": "shannan.woresly@waynestem.org",
-  "woresly": "shannan.woresly@waynestem.org",
-};
+const TEACHER_DIRECTORY = [
+  {
+    name: "Lisa Beckett",
+    email: "lisa.beckett@waynestem.org",
+    shortLabel: "Lisa Beckett - 1",
+    gradeLevel: 1,
+    aliases: ["Beckett"],
+  },
+  {
+    name: "Madison Brantley",
+    email: "madison.brantley@waynestem.org",
+    shortLabel: "Madison Brantley - 2nd",
+    gradeLevel: 2,
+    aliases: ["Brantley"],
+  },
+  {
+    name: "Makenzie Bridgers",
+    email: "makenzie.bridgers@waynestem.org",
+    shortLabel: "Makenzie Bridgers - 4th",
+    gradeLevel: 4,
+    aliases: ["Bridgers"],
+  },
+  {
+    name: "Jacquelyn Carmichael",
+    email: "jacquelyn.carmichael@waynestem.org",
+    shortLabel: "Jacquelyn Carmichael - Technology",
+    gradeLevel: null,
+    aliases: ["Carmichael"],
+  },
+  {
+    name: "Dawn Clark",
+    email: "dawn.clark@waynestem.org",
+    shortLabel: "Dawn Clark - 2nd",
+    gradeLevel: 2,
+    aliases: ["Clark"],
+  },
+  {
+    name: "Nadia Coles",
+    email: "nadia.coles@waynestem.org",
+    shortLabel: "Nadia Coles - 5th",
+    gradeLevel: 5,
+    aliases: ["Coles"],
+  },
+  {
+    name: "Carol Cosetti",
+    email: "carol.cosetti@waynestem.org",
+    shortLabel: "Carol Cosetti - 1st",
+    gradeLevel: 1,
+    aliases: ["Cosetti"],
+  },
+  {
+    name: "Nancy Cross",
+    email: "nancy.cross@waynestem.org",
+    shortLabel: "Nancy Cross - EC",
+    gradeLevel: -1,
+    aliases: ["Cross"],
+  },
+  {
+    name: "Amber Daniels",
+    email: "amber.daniels@waynestem.org",
+    shortLabel: "Amber Daniels - EC",
+    gradeLevel: -1,
+    aliases: ["Daniels"],
+  },
+  {
+    name: "Hollie Danis",
+    email: "hollie.danis@waynestem.org",
+    shortLabel: "Hollie Danis - 3rd",
+    gradeLevel: 3,
+    aliases: ["Danis"],
+  },
+  {
+    name: "Tayetta Darden",
+    email: "tayetta.darden@waynestem.org",
+    shortLabel: "Tayetta Darden",
+    gradeLevel: null,
+    aliases: ["Darden"],
+  },
+  {
+    name: "Jennifer Davis",
+    email: "jennifer.davis@waynestem.org",
+    shortLabel: "Jennifer Davis - 5th",
+    gradeLevel: 5,
+    aliases: ["Davis"],
+  },
+  {
+    name: "Shari Davis",
+    email: "shari.davis@waynestem.org",
+    shortLabel: "Shari Davis",
+    gradeLevel: null,
+    aliases: ["Shari Davis"],
+  },
+  {
+    name: "Taylor Dohar",
+    email: "taylor.dohar@waynestem.org",
+    shortLabel: "Taylor Dohar - 4th",
+    gradeLevel: 4,
+    aliases: ["Dohar"],
+  },
+  {
+    name: "Jennifer Edwards",
+    email: "jennifer.edwards@waynestem.org",
+    shortLabel: "Jennifer Edwards - 4th",
+    gradeLevel: 4,
+    aliases: ["Edwards"],
+  },
+  {
+    name: "Alfreda Faircloth",
+    email: "alfreda.faircloth@waynestem.org",
+    shortLabel: "Alfreda Faircloth",
+    gradeLevel: null,
+    aliases: ["Faircloth"],
+  },
+  {
+    name: "Sherri Fortner",
+    email: "sherri.fortner@waynestem.org",
+    shortLabel: "Sherri Fortner - K",
+    gradeLevel: 0,
+    aliases: ["Fortner"],
+  },
+  {
+    name: "Madison Gibson",
+    email: "madison.gibson@waynestem.org",
+    shortLabel: "Madison Gibson",
+    gradeLevel: null,
+    aliases: ["Gibson"],
+  },
+  {
+    name: "Emily Groff",
+    email: "emily.groff@waynestem.org",
+    shortLabel: "Emily Groff - Music",
+    gradeLevel: null,
+    aliases: ["Groff"],
+  },
+  {
+    name: "Stephanie Ham",
+    email: "stephanie.ham@waynestem.org",
+    shortLabel: "Stephanie Ham - 2nd",
+    gradeLevel: 2,
+    aliases: ["Ham"],
+  },
+  {
+    name: "Krystal Helms",
+    email: "krystal.helms@waynestem.org",
+    shortLabel: "Krystal Helms - K",
+    gradeLevel: 0,
+    aliases: ["Helms"],
+  },
+  {
+    name: "Hannah James",
+    email: "hannah.james@waynestem.org",
+    shortLabel: "Hannah James",
+    gradeLevel: null,
+    aliases: ["James"],
+  },
+  {
+    name: "Nadia Johnson",
+    email: "nadia.johnson@waynestem.org",
+    shortLabel: "Nadia Johnson",
+    gradeLevel: null,
+    aliases: ["Johnson"],
+  },
+  {
+    name: "Karen Jones",
+    email: "karen.jones@waynestem.org",
+    shortLabel: "Karen Jones - 3rd",
+    gradeLevel: 3,
+    aliases: ["Jones"],
+  },
+  {
+    name: "Toinette Lewis",
+    email: "tlewis@lenoir.k12.nc.us",
+    shortLabel: "Toinette Lewis",
+    gradeLevel: null,
+    aliases: ["Lewis"],
+  },
+  {
+    name: "Amanda Maple",
+    email: "amandamaple.rsi@gmail.com",
+    shortLabel: "Amanda Maple",
+    gradeLevel: null,
+    aliases: ["Maple"],
+  },
+  {
+    name: "Emily Marrs",
+    email: "emily.marrs@waynestem.org",
+    shortLabel: "Emily Marrs",
+    gradeLevel: null,
+    aliases: ["Marrs"],
+  },
+  {
+    name: "Tenisha Mcclain",
+    email: "tenisha.mcclain@waynestem.org",
+    shortLabel: "Tenisha Mcclain - 3rd",
+    gradeLevel: 3,
+    aliases: ["McClain", "Mcclain"],
+  },
+  {
+    name: "QuaShanda McCormick",
+    email: "quashanda.mccormick@waynestem.org",
+    shortLabel: "QuaShanda McCormick - K",
+    gradeLevel: 0,
+    aliases: ["McCormick", "Mccormick"],
+  },
+  {
+    name: "Katherine Mello",
+    email: "katherine.mello@waynestem.org",
+    shortLabel: "Katherine Mello - 3rd",
+    gradeLevel: 3,
+    aliases: ["Mello"],
+  },
+  {
+    name: "Adrienne Murray",
+    email: "adrienne.murray@waynestem.org",
+    shortLabel: "Adrienne Murray",
+    gradeLevel: null,
+    aliases: ["Murray"],
+  },
+  {
+    name: "Manami Newberry",
+    email: "manami.newberry@waynestem.org",
+    shortLabel: "Manami Newberry",
+    gradeLevel: null,
+    aliases: ["Newberry"],
+  },
+  {
+    name: "Cheryl Oakley",
+    email: "cheryl.oakley@waynestem.org",
+    shortLabel: "Cheryl Oakley",
+    gradeLevel: null,
+    aliases: ["Oakley"],
+  },
+  {
+    name: "Robin Offield",
+    email: "robin.offield@waynestem.org",
+    shortLabel: "Robin Offield - P.E.",
+    gradeLevel: null,
+    aliases: ["Offield"],
+  },
+  {
+    name: "Deanna Price",
+    email: "deanna.price@waynestem.org",
+    shortLabel: "Deanna Price",
+    gradeLevel: null,
+    aliases: ["Price"],
+  },
+  {
+    name: "Alycia Smith",
+    email: "alycia.smith@waynestem.org",
+    shortLabel: "Alycia Smith - 5th",
+    gradeLevel: 5,
+    aliases: ["Alycia Smith"],
+  },
+  {
+    name: "Jazmine Smith",
+    email: "jazmine.smith@waynestem.org",
+    shortLabel: "Jazmine Smith - 1st",
+    gradeLevel: 1,
+    aliases: ["Jazmine Smith"],
+  },
+  {
+    name: "Ali Swanson",
+    email: "allison.swanson@waynestem.org",
+    shortLabel: "Ali Swanson - Art",
+    gradeLevel: null,
+    aliases: ["Swanson"],
+  },
+  {
+    name: "Todd Toler",
+    email: "todd.toler@waynestem.org",
+    shortLabel: "Todd Toler",
+    gradeLevel: null,
+    aliases: ["Toler"],
+  },
+  {
+    name: "Kayla Walker",
+    email: "kayla.walker@waynestem.org",
+    shortLabel: "Kayla Walker",
+    gradeLevel: null,
+    aliases: ["Walker"],
+  },
+  {
+    name: "Loretta Whitehead",
+    email: "loretta.whitehead@waynestem.org",
+    shortLabel: "Loretta Whitehead",
+    gradeLevel: null,
+    aliases: ["Whitehead"],
+  },
+  {
+    name: "David Williams",
+    email: "david.williams@waynestem.org",
+    shortLabel: "David Williams",
+    gradeLevel: null,
+    aliases: ["Williams"],
+  },
+  {
+    name: "Courtney Wingenroth",
+    email: "courtney.wingenroth@waynestem.org",
+    shortLabel: "Courtney Wingenroth - K",
+    gradeLevel: 0,
+    aliases: ["Wingenroth"],
+  },
+  {
+    name: "Trinity Woods",
+    email: "trinity.woods@waynestem.org",
+    shortLabel: "Trinity Woods",
+    gradeLevel: null,
+    aliases: ["Woods"],
+  },
+  {
+    name: "Shannan Woresly",
+    email: "shannan.woresly@waynestem.org",
+    shortLabel: "Shannan Woresly - 1st",
+    gradeLevel: 1,
+    aliases: ["Woresly"],
+  },
+  {
+    name: "Malerie Young",
+    email: "malerie.young@waynestem.org",
+    shortLabel: "Malerie Young",
+    gradeLevel: null,
+    aliases: ["Young"],
+  },
+];
+
+const TEACHER_DIRECTORY_MAP = new Map();
+for (const entry of TEACHER_DIRECTORY) {
+  const normalizedPrimary = normalizeTeacherName(entry.name).toLowerCase();
+  TEACHER_DIRECTORY_MAP.set(normalizedPrimary, entry);
+  if (entry.aliases) {
+    for (const alias of entry.aliases) {
+      TEACHER_DIRECTORY_MAP.set(normalizeTeacherName(alias).toLowerCase(), entry);
+    }
+  }
+}
+
+function getTeacherDirectoryEntry(name) {
+  if (!name) return undefined;
+  const key = normalizeTeacherName(name).toLowerCase();
+  return TEACHER_DIRECTORY_MAP.get(key);
+}
 
 function getTeacherEmail(teacherName) {
   if (!teacherName) {
     return null;
   }
+  const directoryEntry = getTeacherDirectoryEntry(teacherName);
+  if (directoryEntry?.email) {
+    return directoryEntry.email;
+  }
   const slug = toSlug(teacherName);
-  return TEACHER_EMAIL_OVERRIDES[slug] || `${slug}@waynestem.org`;
+  return `${slug}@waynestem.org`;
 }
 
 async function seedAdmins() {
@@ -440,7 +795,8 @@ async function seedTeachers(rows) {
   }
 
   for (const [key, entry] of teacherEntries) {
-    const baseName = entry.name || "Teacher";
+    const directoryEntry = getTeacherDirectoryEntry(entry.name);
+    const baseName = directoryEntry?.name || entry.name || "Teacher";
     const slugBase = toSlug(baseName);
     const gradeSuffix =
       entry.gradeLevel === null
@@ -449,12 +805,15 @@ async function seedTeachers(rows) {
     const id = `teacher-${slugBase}-${gradeSuffix}`;
     const { name, surname } = splitName(baseName);
     const shortName =
-      entry.gradeLevel === null
+      directoryEntry?.shortLabel ||
+      (entry.gradeLevel === null
         ? baseName
-        : `${baseName} (${gradeLabel(entry.gradeLevel)})`;
+        : `${baseName} (${gradeLabel(entry.gradeLevel)})`);
     const baseEmail = getTeacherEmail(baseName);
     let email;
-    if (baseEmail) {
+    if (directoryEntry?.email) {
+      email = directoryEntry.email;
+    } else if (baseEmail) {
       if (entry.gradeLevel === null) {
         email = baseEmail;
       } else {
@@ -477,7 +836,7 @@ async function seedTeachers(rows) {
         phone: null,
         address: "Unknown",
         bloodType: "Unknown",
-        sex: UserSex.MALE,
+        sex: SEX_VALUES[0],
         shortName,
         birthday: new Date("1990-01-01"),
       },
@@ -689,7 +1048,7 @@ async function seedStudentsFromCsv(rows, gradeMap, classMap, parentMap) {
         phone: null,
         address: "Unknown",
         bloodType: "Unknown",
-        sex: index % 2 === 0 ? UserSex.MALE : UserSex.FEMALE,
+        sex: index % 2 === 0 ? SEX_VALUES[0] : SEX_VALUES[1],
         birthday: new Date("2010-01-01"),
         gradeLevel: row.gradeLevel,
         fullNameLower,
@@ -725,13 +1084,13 @@ async function seedLessons(teacherMap, classMap) {
     return;
   }
 
-  const days = Object.keys(Day);
+    const days = DAY_VALUES;
 
   for (let i = 0; i < 10; i++) {
     await prisma.lesson.create({
       data: {
         name: `Lesson ${i + 1}`,
-        day: Day[days[i % days.length]],
+        day: days[i % days.length],
         startTime: new Date(new Date().setHours(9 + (i % 3))),
         endTime: new Date(new Date().setHours(10 + (i % 3))),
         subjectId: subjectIds[i % subjectIds.length],

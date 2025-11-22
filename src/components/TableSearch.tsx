@@ -3,7 +3,11 @@
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 
-const TableSearch = () => {
+type TableSearchProps = {
+  placeholder?: string;
+};
+
+const TableSearch = ({ placeholder = "Search records..." }: TableSearchProps) => {
   const router = useRouter();
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
@@ -19,13 +23,13 @@ const TableSearch = () => {
   return (
     <form
       onSubmit={handleSubmit}
-      className="w-full md:w-auto flex items-center gap-2 text-xs rounded-full ring-[1.5px] ring-gray-300 px-2"
+      className="flex w-full items-center gap-2 rounded-full border border-[var(--color-border)] bg-[var(--color-surface-muted)] px-3 py-2 text-xs text-[color:var(--color-text-muted)] md:w-auto"
     >
-      <Image src="/search.png" alt="" width={14} height={14} />
+      <Image src="/search.png" alt="" width={14} height={14} className="opacity-80" />
       <input
         type="text"
-        placeholder="Search..."
-        className="w-[200px] p-2 bg-transparent outline-none"
+        placeholder={placeholder}
+        className="w-[200px] bg-transparent text-[color:var(--color-text-primary)] outline-none placeholder:text-[color:var(--color-text-muted)]"
       />
     </form>
   );
