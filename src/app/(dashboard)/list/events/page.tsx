@@ -7,6 +7,7 @@ import TableSearch from "@/components/TableSearch";
 
 import { DEV_USER_ID, getSessionRole } from "@/lib/devAuth";
 import prisma from "@/lib/prisma";
+import { buildStringSearchFilter } from "@/lib/searchFilters";
 import { ITEM_PER_PAGE } from "@/lib/settings";
 
 import { Class, Event, Prisma } from "@prisma/client";
@@ -106,7 +107,7 @@ const EventListPage = async ({
       if (value !== undefined) {
         switch (key) {
           case "search":
-            query.title = { contains: value, mode: "insensitive" };
+            query.title = buildStringSearchFilter(value);
             break;
           default:
             break;

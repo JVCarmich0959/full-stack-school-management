@@ -7,6 +7,7 @@ import TableSearch from "@/components/TableSearch";
 
 import { getSessionRole } from "@/lib/devAuth";
 import prisma from "@/lib/prisma";
+import { buildStringSearchFilter } from "@/lib/searchFilters";
 import { ITEM_PER_PAGE } from "@/lib/settings";
 import { Parent, Prisma, Student } from "@prisma/client";
 
@@ -93,7 +94,7 @@ const renderRow = (item: ParentList) => (
       if (value !== undefined) {
         switch (key) {
           case "search":
-            query.name = { contains: value, mode: "insensitive" };
+            query.name = buildStringSearchFilter(value);
             break;
           default:
             break;

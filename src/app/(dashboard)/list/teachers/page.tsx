@@ -10,6 +10,7 @@ import TableSearch from "@/components/TableSearch";
 
 import { getSessionRole } from "@/lib/devAuth";
 import prisma from "@/lib/prisma";
+import { buildStringSearchFilter } from "@/lib/searchFilters";
 import { ITEM_PER_PAGE } from "@/lib/settings";
 
 type TeacherList = Teacher & { subjects: Subject[] } & { classes: Class[] };
@@ -124,7 +125,7 @@ const TeacherListPage = async ({
             };
             break;
           case "search":
-            query.name = { contains: value, mode: "insensitive" };
+            query.name = buildStringSearchFilter(value);
             break;
           default:
             break;

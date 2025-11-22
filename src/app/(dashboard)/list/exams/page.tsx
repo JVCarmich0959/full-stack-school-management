@@ -7,6 +7,7 @@ import TableSearch from "@/components/TableSearch";
 
 import { DEV_USER_ID, getSessionRole } from "@/lib/devAuth";
 import prisma from "@/lib/prisma";
+import { buildStringSearchFilter } from "@/lib/searchFilters";
 import { ITEM_PER_PAGE } from "@/lib/settings";
 
 import { Class, Exam, Prisma, Subject, Teacher } from "@prisma/client";
@@ -105,7 +106,7 @@ const renderRow = (item: ExamList) => (
             break;
           case "search":
             query.lesson.subject = {
-              name: { contains: value, mode: "insensitive" },
+              name: buildStringSearchFilter(value),
             };
             break;
           default:

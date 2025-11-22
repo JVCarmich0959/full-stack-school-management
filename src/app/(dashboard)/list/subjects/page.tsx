@@ -7,6 +7,7 @@ import TableSearch from "@/components/TableSearch";
 
 import { getSessionRole } from "@/lib/devAuth";
 import prisma from "@/lib/prisma";
+import { buildStringSearchFilter } from "@/lib/searchFilters";
 import { ITEM_PER_PAGE } from "@/lib/settings";
 import { Prisma, Subject, Teacher } from "@prisma/client";
 
@@ -70,7 +71,7 @@ const SubjectListPage = async ({
       if (value !== undefined) {
         switch (key) {
           case "search":
-            query.name = { contains: value, mode: "insensitive" };
+            query.name = buildStringSearchFilter(value);
             break;
           default:
             break;

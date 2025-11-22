@@ -7,6 +7,7 @@ import TableSearch from "@/components/TableSearch";
 
 import { DEV_USER_ID, getSessionRole } from "@/lib/devAuth";
 import prisma from "@/lib/prisma";
+import { buildStringSearchFilter } from "@/lib/searchFilters";
 import { ITEM_PER_PAGE } from "@/lib/settings";
 
 import { Prisma } from "@prisma/client";
@@ -118,8 +119,8 @@ const renderRow = (item: ResultList) => (
             break;
           case "search":
             query.OR = [
-              { exam: { title: { contains: value, mode: "insensitive" } } },
-              { student: { name: { contains: value, mode: "insensitive" } } },
+              { exam: { title: buildStringSearchFilter(value) } },
+              { student: { name: buildStringSearchFilter(value) } },
             ];
             break;
           default:

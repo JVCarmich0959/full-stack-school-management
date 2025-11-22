@@ -7,6 +7,7 @@ import TableSearch from "@/components/TableSearch";
 
 import { DEV_USER_ID, getSessionRole } from "@/lib/devAuth";
 import prisma from "@/lib/prisma";
+import { buildStringSearchFilter } from "@/lib/searchFilters";
 import { ITEM_PER_PAGE } from "@/lib/settings";
 
 import { Assignment, Class, Prisma, Subject, Teacher } from "@prisma/client";
@@ -80,7 +81,7 @@ const AssignmentListPage = async ({ searchParams }: PageProps) => {
   }
   if (teacherId) query.lesson!.teacherId = teacherId;
   if (search) {
-    query.lesson!.subject = { name: { contains: search, mode: "insensitive" } };
+    query.lesson!.subject = { name: buildStringSearchFilter(search) };
   }
 
   // Role scoping

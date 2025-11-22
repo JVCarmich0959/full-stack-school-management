@@ -7,6 +7,7 @@ import TableSearch from "@/components/TableSearch";
 
 import { getSessionRole } from "@/lib/devAuth";
 import prisma from "@/lib/prisma";
+import { buildStringSearchFilter } from "@/lib/searchFilters";
 import { ITEM_PER_PAGE } from "@/lib/settings";
 import { Class, Prisma, Teacher } from "@prisma/client";
 
@@ -89,7 +90,7 @@ const ClassListPage = async ({
             query.supervisorId = value;
             break;
           case "search":
-            query.name = { contains: value, mode: "insensitive" };
+            query.name = buildStringSearchFilter(value);
             break;
           default:
             break;

@@ -5,6 +5,7 @@ import Table from "@/components/Table";
 import TableSearch from "@/components/TableSearch";
 import { DEV_USER_ID, getSessionRole } from "@/lib/devAuth";
 import prisma from "@/lib/prisma";
+import { buildStringSearchFilter } from "@/lib/searchFilters";
 import { ITEM_PER_PAGE } from "@/lib/settings";
 import { Announcement, Class, Prisma } from "@prisma/client";
 
@@ -35,7 +36,7 @@ const AnnouncementListPage = async ({ searchParams }: PageProps) => {
 
   const search = Array.isArray(searchParams.search) ? searchParams.search[0] : searchParams.search;
   if (search) {
-    query.title = { contains: search, mode: "insensitive" };
+    query.title = buildStringSearchFilter(search);
   }
 
   // Role-based visibility
