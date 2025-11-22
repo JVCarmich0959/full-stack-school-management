@@ -10,24 +10,58 @@ import Card from "@/components/ui/Card";
 import PageHeader from "@/components/ui/PageHeader";
 
 // Defer heavy charts to client, no SSR to prevent hydration mismatch
-const CountChartContainer = dynamic(() => import("@/components/CountChartContainer"), { ssr: false, loading: () => <div className="h-64 rounded-2xl bg-muted animate-pulse" /> });
-const AttendanceChartContainer = dynamic(() => import("@/components/AttendanceChartContainer"), { ssr: false, loading: () => <div className="h-64 rounded-2xl bg-muted animate-pulse" /> });
-const FinanceChart = dynamic(() => import("@/components/FinanceChart"), { ssr: false, loading: () => <div className="h-72 rounded-2xl bg-muted animate-pulse" /> });
+const CountChartContainer = dynamic(
+  () => import("@/components/CountChartContainer"),
+  {
+    ssr: false,
+    loading: () => (
+      <div className="h-64 rounded-2xl bg-muted animate-pulse" />
+    ),
+  },
+);
+
+const AttendanceChartContainer = dynamic(
+  () => import("@/components/AttendanceChartContainer"),
+  {
+    ssr: false,
+    loading: () => (
+      <div className="h-64 rounded-2xl bg-muted animate-pulse" />
+    ),
+  },
+);
+
+const FinanceChart = dynamic(() => import("@/components/FinanceChart"), {
+  ssr: false,
+  loading: () => (
+    <div className="h-72 rounded-2xl bg-muted animate-pulse" />
+  ),
+});
 
 type AdminPageProps = {
   searchParams: Record<string, string | string[] | undefined>;
 };
 
-const AdminPage: FC<AdminPageProps> = ({ searchParams }) => {
-  const normalizedSearchParams = Object.fromEntries(
-    Object.entries(searchParams).map(([key, value]) => [
+type NormalizedSearchParams = Record<string, string | undefined>;
+
+const normalizeSearchParams = (
+  params: AdminPageProps["searchParams"],
+): NormalizedSearchParams =>
+  Object.fromEntries(
+    Object.entries(params).map(([key, value]) => [
       key,
       Array.isArray(value) ? value[0] : value,
-    ])
-  ) as { [key: string]: string | undefined };
+    ]),
+  ) as NormalizedSearchParams;
+
+const AdminPage: FC<AdminPageProps> = ({ searchParams }) => {
+  const normalizedSearchParams = normalizeSearchParams(searchParams);
 
   return (
-    <div className="space-y-6" role="main" aria-labelledby="dashboard-title">
+    <main className="space-y-6" aria-labelledby="dashboard-title">
+      <h1 id="dashboard-title" className="sr-only">
+        Admin Dashboard
+      </h1>
+
       <PageHeader
         title="Leadership cockpit"
         subtitle="Monitor enrollment, instructional health, and family communications at a glance."
@@ -50,11 +84,10 @@ const AdminPage: FC<AdminPageProps> = ({ searchParams }) => {
       />
 
       <div className="grid gap-6 lg:grid-cols-3 lg:gap-8">
-        <section className="lg:col-span-2 space-y-6" aria-label="Overview and analytics">
-          <h1 id="dashboard-title" className="sr-only">
-            Admin Dashboard
-          </h1>
-
+        <section
+          className="lg:col-span-2 space-y-6"
+          aria-label="Overview and analytics"
+        >
           <Card padding="lg">
             <div className="flex items-center justify-between">
               <div>
@@ -94,8 +127,11 @@ const AdminPage: FC<AdminPageProps> = ({ searchParams }) => {
           </Card>
         </section>
 
-        <aside className="flex flex-col gap-6" aria-label="Calendar and announcements">
-          <Card className="p-0">
+        <aside
+          className="flex flex-col gap-6"
+          aria-label="Calendar and announcements"
+        >
+          <Card padding="none" className="p-0">
             <EventCalendarContainer searchParams={normalizedSearchParams} />
           </Card>
           <Card>
@@ -103,7 +139,7 @@ const AdminPage: FC<AdminPageProps> = ({ searchParams }) => {
           </Card>
         </aside>
       </div>
-    </div>
+    </main>
   );
 };
 
