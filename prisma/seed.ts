@@ -157,7 +157,7 @@ async function seedTeachers(rows: CsvRow[]): Promise<Map<string, string>> {
     teacherNames.add(`Teacher${i}`);
   }
 
-  for (const teacherName of teacherNames) {
+  for (const teacherName of Array.from(teacherNames)) {
     const slug = toSlug(teacherName);
     const id = `teacher-${slug}`;
     const { name, surname } = splitName(teacherName || "Teacher");
@@ -197,7 +197,7 @@ async function seedGrades(rows: CsvRow[]): Promise<Map<number, number>> {
 
   const gradeMap = new Map<number, number>();
 
-  for (const level of gradeLevels) {
+  for (const level of Array.from(gradeLevels)) {
     const grade = await prisma.grade.upsert({
       where: { level },
       update: {},
