@@ -1,7 +1,6 @@
 "use client";
 
 import Image from "next/image";
-import { CldUploadWidget } from "next-cloudinary";
 import { useRouter } from "next/navigation";
 
 import { Dispatch, SetStateAction, useEffect, useState } from "react";
@@ -10,6 +9,7 @@ import { toast } from "react-toastify";
 import { useFormState } from "react-dom";
 
 import InputField from "../InputField";
+import SafeUploadWidget from "../cloudinary/SafeUploadWidget";
 
 import { zodResolver } from "@hookform/resolvers/zod";
 import { teacherSchema, TeacherSchema } from "@/lib/formValidationSchemas";
@@ -186,25 +186,23 @@ const TeacherForm = ({
             </p>
           )}
         </div>
-        <CldUploadWidget
+        <SafeUploadWidget
           uploadPreset="school"
-          onSuccess={(result, { widget }) => {
+          onUpload={(result, widget) => {
             setImg(result.info);
             widget.close();
           }}
         >
-          {({ open }) => {
-            return (
-              <div
-                className="text-xs text-gray-500 flex items-center gap-2 cursor-pointer"
-                onClick={() => open()}
-              >
-                <Image src="/upload.png" alt="" width={28} height={28} />
-                <span>Upload a photo</span>
-              </div>
-            );
-          }}
-        </CldUploadWidget>
+          {({ open }) => (
+            <div
+              className="text-xs text-gray-500 flex items-center gap-2 cursor-pointer"
+              onClick={() => open()}
+            >
+              <Image src="/upload.png" alt="" width={28} height={28} />
+              <span>Upload a photo</span>
+            </div>
+          )}
+        </SafeUploadWidget>
       </div>
       {state.error && (
         <span className="text-red-500">Something went wrong!</span>
