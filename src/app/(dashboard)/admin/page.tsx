@@ -2,7 +2,10 @@
 import type { FC } from "react";
 import dynamic from "next/dynamic";
 import Announcements from "@/components/Announcements";
+import DataExchangePanel from "@/components/DataExchangePanel";
 import EventCalendarContainer from "@/components/EventCalendarContainer";
+import NotificationsFeed from "@/components/NotificationsFeed";
+import ReportingInsights from "@/components/ReportingInsights";
 import UserCard from "@/components/UserCard";
 
 // Defer heavy charts to client, no SSR to prevent hydration mismatch
@@ -42,6 +45,14 @@ const AdminPage: FC<AdminPageProps> = ({ searchParams }) => {
         {/* BOTTOM CHART */}
         <div className="min-h-[clamp(320px,45vh,520px)]">
           <FinanceChart />
+        </div>
+
+        <div className="grid lg:grid-cols-[1.5fr,1fr] gap-4">
+          <ReportingInsights />
+          <div className="grid gap-4 h-full">
+            <NotificationsFeed />
+            <DataExchangePanel />
+          </div>
         </div>
       </section>
 
