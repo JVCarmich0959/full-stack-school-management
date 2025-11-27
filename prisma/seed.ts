@@ -1,4 +1,4 @@
-import { PrismaClient, UserSex } from "@prisma/client";
+import { PrismaClient } from "@prisma/client";
 import fs from "fs";
 import path from "path";
 
@@ -174,7 +174,7 @@ async function seedTeachers(rows: CsvRow[]): Promise<Map<string, string>> {
         phone: null,
         address: "Unknown",
         bloodType: "Unknown",
-        sex: UserSex.MALE,
+        sex: "MALE",
         shortName: teacherName,
         birthday: new Date("1990-01-01"),
       },
@@ -360,7 +360,7 @@ async function seedStudentsFromCsv(
         phone: null,
         address: "Unknown",
         bloodType: "Unknown",
-        sex: index % 2 === 0 ? UserSex.MALE : UserSex.FEMALE,
+        sex: index % 2 === 0 ? "MALE" : "FEMALE",
         birthday: new Date("2010-01-01"),
         gradeLevel: row.gradeLevel,
         classId,
