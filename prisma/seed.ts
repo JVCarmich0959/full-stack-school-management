@@ -1,4 +1,4 @@
-import { Day, PrismaClient, UserSex } from "@prisma/client";
+import { PrismaClient, UserSex } from "@prisma/client";
 import fs from "fs";
 import path from "path";
 
@@ -394,13 +394,13 @@ async function seedLessons(teacherMap: Map<string, string>, classMap: Map<string
     return;
   }
 
-  const days = Object.keys(Day) as Array<keyof typeof Day>;
+  const days = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"]; // lesson day values are plain strings
 
   for (let i = 0; i < 10; i++) {
     await prisma.lesson.create({
       data: {
         name: `Lesson ${i + 1}`,
-        day: Day[days[i % days.length]],
+        day: days[i % days.length],
         startTime: new Date(new Date().setHours(9 + (i % 3))),
         endTime: new Date(new Date().setHours(10 + (i % 3))),
         subjectId: subjectIds[i % subjectIds.length],

@@ -2,7 +2,6 @@
 
 import Image from "next/image";
 import { useRouter } from "next/navigation";
-import { CldUploadWidget } from "next-cloudinary";
 
 import { Dispatch, SetStateAction, useEffect, useState } from "react";
 import { toast } from "react-toastify";
@@ -10,6 +9,7 @@ import { useFormState } from "react-dom";
 import { useForm } from "react-hook-form";
 
 import InputField from "../InputField";
+import SafeUploadWidget from "../cloudinary/SafeUploadWidget";
 
 
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -108,25 +108,22 @@ const StudentForm = ({
       <span className="text-xs text-gray-400 font-medium">
         Personal Information
       </span>
-      <CldUploadWidget
-        uploadPreset=""
-        onSuccess={(result, { widget }) => {
+      <SafeUploadWidget
+        onUpload={(result, widget) => {
           setImg(result.info);
           widget.close();
         }}
       >
-        {({ open }) => {
-          return (
-            <div
-              className="text-xs text-gray-500 flex items-center gap-2 cursor-pointer"
-              onClick={() => open()}
-            >
-              <Image src="/upload.png" alt="" width={28} height={28} />
-              <span>Upload a photo</span>
-            </div>
-          );
-        }}
-      </CldUploadWidget>
+        {({ open }) => (
+          <div
+            className="text-xs text-gray-500 flex items-center gap-2 cursor-pointer"
+            onClick={() => open()}
+          >
+            <Image src="/upload.png" alt="" width={28} height={28} />
+            <span>Upload a photo</span>
+          </div>
+        )}
+      </SafeUploadWidget>
       <div className="flex justify-between flex-wrap gap-4">
         <InputField
           label="First Name"
