@@ -309,7 +309,8 @@ async function seedStudentsFromCsv(
 ): Promise<string[]> {
   const studentIds: string[] = [];
 
-  for (const [index, row] of rows.entries()) {
+  for (let index = 0; index < rows.length; index++) {
+    const row = rows[index];
     const gradeId = gradeMap.get(row.gradeLevel);
     if (!gradeId) continue;
 
