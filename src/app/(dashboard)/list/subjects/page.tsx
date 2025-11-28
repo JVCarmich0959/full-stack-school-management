@@ -15,7 +15,7 @@ type SubjectList = Subject & { teachers: Teacher[] };
 const SubjectListPage = async ({
   searchParams,
 }: {
-  searchParams: { [key: string]: string | undefined };
+  searchParams: Record<string, string | string[] | undefined>;
 }) => {
   const role = getSessionRole();
 

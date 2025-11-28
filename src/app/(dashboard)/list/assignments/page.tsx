@@ -110,7 +110,7 @@ const AssignmentListPage = async ({ searchParams }: PageProps) => {
           },
         },
       },
-      orderBy: [{ dueDate: "desc" }, { createdAt: "desc" }], // stable pagination
+      orderBy: [{ dueDate: "desc" }, { id: "desc" }], // stable pagination
       take: ITEM_PER_PAGE,
       skip: ITEM_PER_PAGE * (p - 1),
     }),
