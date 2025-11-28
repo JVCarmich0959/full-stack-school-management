@@ -57,7 +57,14 @@ const SubjectListPage = async ({
     </tr>
   );
 
-  const { page, ...queryParams } = searchParams;
+  const normalizedParams = Object.fromEntries(
+    Object.entries(searchParams).map(([key, val]) => [
+      key,
+      Array.isArray(val) ? val[0] : val,
+    ]),
+  ) as Record<string, string | undefined>;
+
+  const { page, ...queryParams } = normalizedParams;
 
   const p = page ? parseInt(Array.isArray(page) ? page[0] : page) : 1;
 
