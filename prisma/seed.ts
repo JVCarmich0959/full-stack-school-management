@@ -1,4 +1,4 @@
-import { PrismaClient, UserSex } from "@prisma/client";
+import { PrismaClient } from "@prisma/client";
 import fs from "fs";
 import path from "path";
 
@@ -157,7 +157,7 @@ async function seedTeachers(rows: CsvRow[]): Promise<Map<string, string>> {
     teacherNames.add(`Teacher${i}`);
   }
 
-  for (const teacherName of teacherNames) {
+  for (const teacherName of Array.from(teacherNames)) {
     const slug = toSlug(teacherName);
     const id = `teacher-${slug}`;
     const { name, surname } = splitName(teacherName || "Teacher");
@@ -174,7 +174,7 @@ async function seedTeachers(rows: CsvRow[]): Promise<Map<string, string>> {
         phone: null,
         address: "Unknown",
         bloodType: "Unknown",
-        sex: UserSex.MALE,
+        sex: "MALE",
         shortName: teacherName,
         birthday: new Date("1990-01-01"),
       },
@@ -197,7 +197,7 @@ async function seedGrades(rows: CsvRow[]): Promise<Map<number, number>> {
 
   const gradeMap = new Map<number, number>();
 
-  for (const level of gradeLevels) {
+  for (const level of Array.from(gradeLevels)) {
     const grade = await prisma.grade.upsert({
       where: { level },
       update: {},
@@ -309,7 +309,8 @@ async function seedStudentsFromCsv(
 ): Promise<string[]> {
   const studentIds: string[] = [];
 
-  for (const [index, row] of rows.entries()) {
+  for (let index = 0; index < rows.length; index++) {
+    const row = rows[index];
     const gradeId = gradeMap.get(row.gradeLevel);
     if (!gradeId) continue;
 
@@ -360,7 +361,7 @@ async function seedStudentsFromCsv(
         phone: null,
         address: "Unknown",
         bloodType: "Unknown",
-        sex: index % 2 === 0 ? UserSex.MALE : UserSex.FEMALE,
+        sex: index % 2 === 0 ? "MALE" : "FEMALE",
         birthday: new Date("2010-01-01"),
         gradeLevel: row.gradeLevel,
         classId,
