@@ -15,7 +15,7 @@ type ParentList = Parent & { students: Student[] };
 const ParentListPage = async ({
   searchParams,
 }: {
-  searchParams: { [key: string]: string | undefined };
+  searchParams: Record<string, string | string[] | undefined>;
 }) => {
 
 const role = getSessionRole();
