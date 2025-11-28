@@ -17,7 +17,7 @@ type LessonList = Lesson & { subject: Subject } & { class: Class } & {
 const LessonListPage = async ({
   searchParams,
 }: {
-  searchParams: { [key: string]: string | undefined };
+  searchParams: Record<string, string | string[] | undefined>;
 }) => {
 
 const role = getSessionRole();
