@@ -17,7 +17,7 @@ type TeacherList = Teacher & { subjects: Subject[] } & { classes: Class[] };
 const TeacherListPage = async ({
   searchParams,
 }: {
-  searchParams: { [key: string]: string | undefined };
+  searchParams: Record<string, string | string[] | undefined>;
 }) => {
   const role = getSessionRole();
   const columns = [
@@ -104,7 +104,14 @@ const TeacherListPage = async ({
       </td>
     </tr>
   );
-  const { page, ...queryParams } = searchParams;
+  const normalizedParams = Object.fromEntries(
+    Object.entries(searchParams).map(([key, val]) => [
+      key,
+      Array.isArray(val) ? val[0] : val,
+    ]),
+  ) as Record<string, string | undefined>;
+
+  const { page, ...queryParams } = normalizedParams;
 
   const p = page ? parseInt(page) : 1;
 
