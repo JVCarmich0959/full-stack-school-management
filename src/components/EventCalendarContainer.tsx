@@ -7,7 +7,7 @@ import prisma from "@/lib/prisma";
 const EventCalendarContainer = async ({
   searchParams,
 }: {
-  searchParams: { [keys: string]: string | undefined };
+  searchParams: { [keys: string]: string | string[] | undefined };
 }) => {
   const { date } = searchParams;
   const events = await prisma.event.findMany({

@@ -14,10 +14,13 @@ import type { ParentWithStudents } from "@/server/repositories/parentRepository"
 import { getParentDirectory } from "@/server/services/parentService";
 import type { GuardianFilter } from "@/server/types/filters";
 
+const pickFirst = (value: string | string[] | undefined) =>
+  Array.isArray(value) ? value[0] : value;
+
 const ParentListPage = async ({
   searchParams,
 }: {
-  searchParams: { [key: string]: string | undefined };
+  searchParams: Record<string, string | string[] | undefined>;
 }) => {
   const role = getSessionRole();
 
@@ -121,11 +124,18 @@ const ParentListPage = async ({
   };
 
   const { page, ...queryParams } = searchParams;
-  const p = page ? parseInt(page, 10) : 1;
-  const searchValue = queryParams.search?.trim();
-  const gradeFilter = queryParams.grade ? parseInt(queryParams.grade, 10) : undefined;
-  const homeroomFilter = queryParams.homeroom?.trim();
-  const guardianFilterParam = queryParams.guardian?.trim();
+  const normalizedPage = pickFirst(page);
+  const parsedPage = normalizedPage ? parseInt(normalizedPage, 10) : NaN;
+  const p = Number.isFinite(parsedPage) ? parsedPage : 1;
+  const searchValue = pickFirst(queryParams.search)?.trim();
+  const rawGrade = pickFirst(queryParams.grade);
+  const parsedGrade = rawGrade ? parseInt(rawGrade, 10) : undefined;
+  const gradeFilter =
+    parsedGrade !== undefined && Number.isFinite(parsedGrade)
+      ? parsedGrade
+      : undefined;
+  const homeroomFilter = pickFirst(queryParams.homeroom);
+  const guardianFilterParam = pickFirst(queryParams.guardian);
   const guardianFilter: GuardianFilter | undefined =
     guardianFilterParam === "complete" || guardianFilterParam === "missing"
       ? guardianFilterParam
@@ -135,7 +145,7 @@ const ParentListPage = async ({
     page: p,
     pageSize: ITEM_PER_PAGE,
     search: searchValue,
-    grade: Number.isFinite(gradeFilter) ? gradeFilter : undefined,
+    grade: Number.isFinite(gradeFilter ?? NaN) ? gradeFilter : undefined,
     homeroom: homeroomFilter,
     guardian: guardianFilter,
   });

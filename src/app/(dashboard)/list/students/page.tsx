@@ -12,10 +12,19 @@ import { ITEM_PER_PAGE } from "@/lib/settings";
 import type { StudentWithClass } from "@/server/repositories/studentRepository";
 import { getStudentDirectory } from "@/server/services/studentService";
 
+const pickFirst = (value: string | string[] | undefined) =>
+  Array.isArray(value) ? value[0] : value;
+
+const parseNumberParam = (value: string | undefined) => {
+  if (!value) return undefined;
+  const parsed = Number.parseInt(value, 10);
+  return Number.isFinite(parsed) ? parsed : undefined;
+};
+
 const StudentListPage = async ({
   searchParams,
 }: {
-  searchParams: { [key: string]: string | undefined };
+  searchParams: Record<string, string | string[] | undefined>;
 }) => {
   const role = getSessionRole();
 
@@ -84,9 +93,6 @@ const StudentListPage = async ({
             </button>
           </Link>
           {role === "admin" && (
-            // <button className="w-7 h-7 flex items-center justify-center rounded-full bg-plPurple">
-            //   <Image src="/delete.png" alt="" width={16} height={16} />
-            // </button>
             <FormContainer table="student" type="delete" id={item.id} />
           )}
         </div>
@@ -95,18 +101,17 @@ const StudentListPage = async ({
   );
 
   const { page, ...queryParams } = searchParams;
-  const p = page ? parseInt(page as string, 10) : 1;
-  const searchValue = queryParams.search?.trim();
-  const gradeFilter = queryParams.grade
-    ? parseInt(queryParams.grade, 10)
-    : undefined;
-  const teacherFilter = queryParams.teacherId?.trim();
+  const pageParam = parseNumberParam(pickFirst(page));
+  const p = pageParam ?? 1;
+  const searchValue = pickFirst(queryParams.search)?.trim();
+  const gradeFilter = parseNumberParam(pickFirst(queryParams.grade));
+  const teacherFilter = pickFirst(queryParams.teacherId);
 
   const directory = await getStudentDirectory({
     page: p,
     pageSize: ITEM_PER_PAGE,
     search: searchValue,
-    grade: Number.isFinite(gradeFilter) ? gradeFilter : undefined,
+    grade: gradeFilter,
     teacherId: teacherFilter,
   });
 

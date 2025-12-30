@@ -12,10 +12,19 @@ import { ITEM_PER_PAGE } from "@/lib/settings";
 import type { TeacherWithRelations } from "@/server/repositories/teacherRepository";
 import { getTeacherDirectory } from "@/server/services/teacherService";
 
+const pickFirst = (value: string | string[] | undefined) =>
+  Array.isArray(value) ? value[0] : value;
+
+const parseNumberParam = (value: string | undefined) => {
+  if (!value) return undefined;
+  const parsed = Number.parseInt(value, 10);
+  return Number.isFinite(parsed) ? parsed : undefined;
+};
+
 const TeacherListPage = async ({
   searchParams,
 }: {
-  searchParams: { [key: string]: string | undefined };
+  searchParams: Record<string, string | string[] | undefined>;
 }) => {
   const role = getSessionRole();
   const columns = [
@@ -93,9 +102,6 @@ const TeacherListPage = async ({
             </button>
           </Link>
           {role === "admin" && (
-            // <button className="w-7 h-7 flex items-center justify-center rounded-full bg-plPurple">
-            //   <Image src="/delete.png" alt="" width={16} height={16} />
-            // </button>
             <FormContainer table="teacher" type="delete" id={item.id} />
           )}
         </div>
@@ -103,15 +109,16 @@ const TeacherListPage = async ({
     </tr>
   );
   const { page, ...queryParams } = searchParams;
-  const p = page ? parseInt(page as string, 10) : 1;
-  const searchValue = queryParams.search?.trim();
-  const classId = queryParams.classId ? parseInt(queryParams.classId, 10) : undefined;
+  const pageParam = parseNumberParam(pickFirst(page));
+  const p = pageParam ?? 1;
+  const searchValue = pickFirst(queryParams.search)?.trim();
+  const classIdFilter = parseNumberParam(pickFirst(queryParams.classId));
 
   const directory = await getTeacherDirectory({
     page: p,
     pageSize: ITEM_PER_PAGE,
     search: searchValue,
-    classId: Number.isFinite(classId) ? classId : undefined,
+    classId: classIdFilter,
   });
 
   const data = directory.teachers;

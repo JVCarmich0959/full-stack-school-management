@@ -18,7 +18,7 @@ type LessonList = Lesson & { subject: Subject } & { class: Class } & {
 const LessonListPage = async ({
   searchParams,
 }: {
-  searchParams: { [key: string]: string | undefined };
+  searchParams: Record<string, string | string[] | undefined>;
 }) => {
 
 const role = getSessionRole();
@@ -73,7 +73,7 @@ const renderRow = (item: LessonList) => (
 
   const { page, ...queryParams } = searchParams;
 
-  const p = page ? parseInt(page) : 1;
+  const p = page ? parseInt(Array.isArray(page) ? page[0] : page) : 1;
 
   // URL PARAMS CONDITION
 

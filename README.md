@@ -17,7 +17,8 @@
 
 ## 📖 Project Overview
 
-ScholarLinq is a comprehensive School Management System built with Next.js and Tailwind CSS. 
+ScholarLinq is a comprehensive School Management System built with Next.js, Tailwind CSS, Prisma, and Clerk-powered authentication. The design centers on role-specific dashboards that surface the insights every school stakeholder needs while keeping the data layer flexible enough for future integrations.
+
 ## 🌟 Features
 
 - Multi-role dashboard (Admin, Teacher, Student, Parent)
@@ -121,6 +122,6 @@ This project is open-source and available under the MIT License.
 
 ---
 
-**Created by**: Pakagrong Lebel
-**GitHub**: [@pakagronglb](https://github.com/pakagronglb)
-**Contact**: pakagronglebel@gmail.com 
+**Created by**: Pakagrong Lebel  
+**GitHub**: [@pakagronglb](https://github.com/pakagronglb)  
+**Contact**: pakagronglebel@gmail.com

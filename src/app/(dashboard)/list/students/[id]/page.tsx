@@ -55,6 +55,7 @@ const SingleStudentPage = async ({
   if (!student) {
     return notFound();
   }
+
   const header = (
     <div className="rounded-3xl border border-[var(--color-border)] bg-[var(--color-card)] p-4">
       <div className="flex flex-col gap-4 lg:flex-row">
@@ -113,8 +114,53 @@ const SingleStudentPage = async ({
     </>
   );
 
+  const shortcutLinks = [
+    {
+      label: "Student's Lessons",
+      href: `/list/lessons?classId=${student.class.id}`,
+      tone: "bg-plSkyLight",
+    },
+    {
+      label: "Student's Teachers",
+      href: `/list/teachers?classId=${student.class.id}`,
+      tone: "bg-plPurpleLight",
+    },
+    {
+      label: "Student's Exams",
+      href: `/list/exams?classId=${student.class.id}`,
+      tone: "bg-pink-50",
+    },
+    {
+      label: "Student's Assignments",
+      href: `/list/assignments?classId=${student.class.id}`,
+      tone: "bg-plSkyLight",
+    },
+    {
+      label: "Student's Results",
+      href: `/list/results?studentId=${student.id}`,
+      tone: "bg-plYellowLight",
+    },
+  ];
+
   const sidebarSection = (
     <>
+      <div className="rounded-3xl border border-[var(--color-border)] bg-[var(--color-card)] p-4">
+        <header className="flex items-center justify-between">
+          <h2 className="text-xl font-semibold">Shortcuts</h2>
+          <span className="text-xs text-[color:var(--color-text-muted)]">Quick nav</span>
+        </header>
+        <div className="mt-4 flex flex-wrap gap-2 text-xs text-[color:var(--color-text-muted)]">
+          {shortcutLinks.map((link) => (
+            <Link
+              key={link.label}
+              href={link.href}
+              className={`px-3 py-1.5 rounded-md font-medium text-[color:var(--color-text-primary)] ${link.tone}`}
+            >
+              {link.label}
+            </Link>
+          ))}
+        </div>
+      </div>
       <div className="rounded-3xl border border-[var(--color-border)] bg-[var(--color-card)] p-4">
         <h2 className="text-xl font-semibold">Digital Access</h2>
         <div className="mt-3 space-y-2 text-sm">

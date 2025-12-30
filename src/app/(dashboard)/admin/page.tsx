@@ -4,7 +4,10 @@ import dynamic from "next/dynamic";
 import Link from "next/link";
 
 import Announcements from "@/components/Announcements";
+import DataExchangePanel from "@/components/DataExchangePanel";
 import EventCalendarContainer from "@/components/EventCalendarContainer";
+import NotificationsFeed from "@/components/NotificationsFeed";
+import ReportingInsights from "@/components/ReportingInsights";
 import UserCard from "@/components/UserCard";
 import Card from "@/components/ui/Card";
 import PageHeader from "@/components/ui/PageHeader";
@@ -125,8 +128,19 @@ const AdminPage: FC<AdminPageProps> = ({ searchParams }) => {
           <Card className="min-h-[clamp(320px,45vh,520px)]">
             <FinanceChart />
           </Card>
-        </section>
 
+          <div className="grid lg:grid-cols-[1.5fr,1fr] gap-4">
+            <ReportingInsights />
+            <div className="grid gap-4 h-full">
+              <Card className="p-0">
+                <NotificationsFeed />
+              </Card>
+              <Card className="p-0">
+                <DataExchangePanel />
+              </Card>
+            </div>
+          </div>
+        </section>
         <aside
           className="flex flex-col gap-6"
           aria-label="Calendar and announcements"

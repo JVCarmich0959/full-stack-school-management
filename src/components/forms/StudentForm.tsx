@@ -100,22 +100,20 @@ const StudentForm = ({
       </span>
       <SafeUploadWidget
         uploadPreset="school"
-        onSuccess={(result, { widget }) => {
+        onUpload={(result, { widget }) => {
           setImg(result.info);
           widget.close();
         }}
       >
-        {({ open }) => {
-          return (
-            <div
-              className="text-xs text-gray-500 flex items-center gap-2 cursor-pointer"
-              onClick={() => open()}
-            >
-              <Image src="/upload.png" alt="" width={28} height={28} />
-              <span>Upload a photo</span>
-            </div>
-          );
-        }}
+        {({ open }) => (
+          <div
+            className="text-xs text-gray-500 flex items-center gap-2 cursor-pointer"
+            onClick={() => open()}
+          >
+            <Image src="/upload.png" alt="" width={28} height={28} />
+            <span>Upload a photo</span>
+          </div>
+        )}
       </SafeUploadWidget>
       <div className="flex justify-between flex-wrap gap-4">
         <InputField
