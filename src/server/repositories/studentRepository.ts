@@ -38,10 +38,10 @@ export const buildStudentWhere = (
 
   if (search) {
     where.OR = [
-      { name: { contains: search, mode: "insensitive" } },
-      { surname: { contains: search, mode: "insensitive" } },
-      { firstName: { contains: search, mode: "insensitive" } },
-      { lastName: { contains: search, mode: "insensitive" } },
+      { name: { contains: search } },
+      { surname: { contains: search } },
+      { firstName: { contains: search } },
+      { lastName: { contains: search } },
     ];
   }
 

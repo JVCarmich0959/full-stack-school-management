@@ -1,45 +1,76 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 
-import { fetchStudentMetrics } from "@/lib/services/metricsService";
+import { SnapshotPolicy } from "@/lib/freshnessPolicy";
+import {
+  fetchStudentPerformanceMetrics,
+  requestSnapshotRefresh,
+} from "@/lib/api/classroomMetrics";
+import type { ApiResponse, FreshnessMeta } from "@/types/api";
 import type { StudentMetrics } from "@/types/metrics";
 
 type HookState = {
   data?: StudentMetrics;
+  meta?: FreshnessMeta;
   error?: string;
   isLoading: boolean;
+  isRefetching: boolean;
+  isRefreshing: boolean;
+  refreshNow?: () => Promise<void>;
 };
 
-/**
- * Provides student performance metrics for dashboards.
- * @param studentId - Unique identifier for the student profile.
- */
 export const useStudentMetrics = (studentId: string): HookState => {
-  const [state, setState] = useState<HookState>({ isLoading: true });
+  const queryClient = useQueryClient();
+  const queryKey = ["studentMetrics", studentId];
 
-  useEffect(() => {
-    let mounted = true;
+  const query = useQuery({
+    queryKey,
+    queryFn: () => fetchStudentPerformanceMetrics(studentId),
+    staleTime: SnapshotPolicy.staleThresholdSeconds * 1000,
+    cacheTime: SnapshotPolicy.staleThresholdSeconds * 2 * 1000,
+    refetchOnWindowFocus: false,
+    refetchOnMount: true,
+    retry: 1,
+    refetchInterval: (data) => {
+      const meta = data?.meta;
+      if (!meta) {
+        return 60 * 1000;
+      }
+      if (meta.refreshStatus && meta.refreshStatus !== "READY") {
+        return 5 * 1000;
+      }
+      if (
+        meta.snapshotAgeSeconds > SnapshotPolicy.staleThresholdSeconds &&
+        meta.snapshotAgeSeconds !== undefined
+      ) {
+        return 10 * 1000;
+      }
+      return 60 * 1000;
+    },
+  });
 
-    fetchStudentMetrics(studentId)
-      .then((data) => {
-        if (mounted) {
-          setState({ data, isLoading: false });
-        }
-      })
-      .catch((error) => {
-        if (mounted) {
-          setState({
-            error: error instanceof Error ? error.message : "Unable to load metrics",
-            isLoading: false,
-          });
-        }
-      });
+  const refreshMutation = useMutation({
+    mutationFn: () => requestSnapshotRefresh(studentId),
+    onSuccess: () => {
+      queryClient.invalidateQueries(queryKey);
+    },
+  });
 
-    return () => {
-      mounted = false;
-    };
-  }, [studentId]);
+  const error =
+    query.error instanceof Error
+      ? query.error.message
+      : query.error
+      ? "Unable to load metrics"
+      : undefined;
 
-  return state;
+  return {
+    data: query.data?.data,
+    meta: query.data?.meta,
+    error,
+    isLoading: query.isLoading,
+    isRefetching: query.isRefetching,
+    isRefreshing: refreshMutation.isLoading,
+    refreshNow: () => refreshMutation.mutateAsync(),
+  };
 };

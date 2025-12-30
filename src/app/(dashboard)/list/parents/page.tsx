@@ -277,7 +277,7 @@ const ParentListPage = async ({
         <ParentFilters
           grades={gradeOptions}
           homerooms={homeroomOptions}
-          selectedGrade={gradeFilter}
+          selectedGrade={gradeFilter !== undefined ? String(gradeFilter) : undefined}
           selectedHomeroom={homeroomFilter}
           selectedGuardian={guardianFilter}
         />

@@ -3,6 +3,7 @@ import type { Metadata } from "next";
 import { ToastContainer } from "react-toastify";
 
 import { ThemeProvider } from "@/components/theme/ThemeProvider";
+import QueryProvider from "@/components/QueryProvider";
 
 import "react-toastify/dist/ReactToastify.css";
 import "./globals.css";
@@ -21,8 +22,10 @@ export default function RootLayout({
     <html lang="en" className="h-full" suppressHydrationWarning data-theme="light">
       <body className="min-h-full font-sans antialiased">
         <ThemeProvider>
-          {children}
-          <ToastContainer position="bottom-right" theme="dark" />
+          <QueryProvider>
+            {children}
+            <ToastContainer position="bottom-right" theme="dark" />
+          </QueryProvider>
         </ThemeProvider>
       </body>
     </html>

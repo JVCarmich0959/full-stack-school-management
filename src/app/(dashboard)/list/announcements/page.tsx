@@ -51,7 +51,7 @@ const AnnouncementListPage = async ({ searchParams }: PageProps) => {
   const search = rawSearch?.trim();
 
   if (search) {
-    query.title = { contains: search, mode: "insensitive" };
+    query.title = { contains: search };
   }
 
   // Role-based visibility

@@ -1,4 +1,7 @@
-import { getStudentPerformanceSnapshot } from "@/lib/performance";
+import {
+  getStudentPerformanceSnapshot,
+  type StudentPerformanceSnapshotWithMeta,
+} from "@/lib/performance";
 import type {
   ClassroomMetric,
   ClassroomMetrics,
@@ -13,7 +16,7 @@ const log = (message: string, payload?: unknown) => {
   }
 };
 
-const toStudentMetrics = (snapshot: ReturnType<typeof getStudentPerformanceSnapshot>): StudentMetrics => ({
+const toStudentMetrics = (snapshot: StudentPerformanceSnapshot): StudentMetrics => ({
   overallScore: snapshot.overallScore,
   growthRate: snapshot.growthRate,
   attendanceRate: snapshot.attendanceRate,
@@ -25,28 +28,43 @@ const toStudentMetrics = (snapshot: ReturnType<typeof getStudentPerformanceSnaps
   assessments: snapshot.assessments,
 });
 
-const generateClassroomMetric = (
-  seed: string,
-  label: string,
-  min: number,
-  max: number,
-  helper?: string
-): ClassroomMetric => {
-  const value =
-    ((seed.charCodeAt(0) + label.charCodeAt(0)) % (max - min)) + min;
-  return { label, value, helper };
+export type StudentClassroomMetricsResponse = {
+  metrics: ClassroomMetrics;
+  meta: {
+    snapshotAgeSeconds: number;
+    refreshStatus: StudentPerformanceSnapshotWithMeta["refreshStatus"];
+    warning?: string;
+  };
 };
 
-export const buildStudentClassroomMetrics = (
+export const buildStudentClassroomMetrics = async (
   studentId: string
-): ClassroomMetrics => {
+): Promise<StudentClassroomMetricsResponse> => {
+  const {
+    metrics: snapshot,
+    snapshotAgeSeconds,
+    warning,
+    refreshStatus,
+  } = await getStudentPerformanceSnapshot(studentId);
+  const onTrackValue = Math.min(100, Math.max(0, Math.round(snapshot.overallScore)));
+  const remaining = Math.max(0, 100 - onTrackValue);
+  const acceleratedValue = Math.min(
+    remaining,
+    Math.max(0, Math.round(snapshot.growthRate / 2))
+  );
+  const watchValue = Math.max(0, remaining - acceleratedValue);
+
   const masteryDistribution: ClassroomMetric[] = [
-    generateClassroomMetric(studentId, "On Track", 60, 85, "Scholars meeting benchmarks"),
-    generateClassroomMetric(studentId, "Watch", 10, 25, "Floor coaching needed"),
-    generateClassroomMetric(studentId, "Accelerated", 5, 20, "Enrichment ready"),
+    { label: "On Track", value: onTrackValue, helper: "Meeting mastery targets" },
+    { label: "Watch", value: watchValue, helper: "Needs coaching" },
+    {
+      label: "Accelerated",
+      value: acceleratedValue,
+      helper: "Above grade level",
+    },
   ];
 
-  const topSubjects = getStudentPerformanceSnapshot(studentId).subjectMetrics
+  const topSubjects = snapshot.subjectMetrics
     .slice(0, 3)
     .map((subject) => ({
       ...subject,
@@ -54,9 +72,16 @@ export const buildStudentClassroomMetrics = (
     }));
 
   return {
-    masteryDistribution,
-    averageAttendance: generateClassroomMetric(studentId, "Attendance", 92, 99).value,
-    topSubjects,
+    metrics: {
+      masteryDistribution,
+      averageAttendance: Math.round(snapshot.attendanceRate),
+      topSubjects,
+    },
+    meta: {
+      snapshotAgeSeconds,
+      refreshStatus,
+      warning,
+    },
   };
 };
 
@@ -65,11 +90,17 @@ export const fetchStudentMetrics = async (
 ): Promise<StudentMetrics> => {
   try {
     log("fetchStudentMetrics:start", { studentId });
-    // TODO: Replace random data with live assessments
-    const snapshot = getStudentPerformanceSnapshot(studentId);
-    const metrics = toStudentMetrics(snapshot);
+    const snapshotEnvelope = await getStudentPerformanceSnapshot(studentId);
+    const metrics = toStudentMetrics(snapshotEnvelope.metrics);
     log("fetchStudentMetrics:success");
-    return metrics;
+    return {
+      ...metrics,
+      snapshot: {
+        ageSeconds: snapshotEnvelope.snapshotAgeSeconds,
+        refreshStatus: snapshotEnvelope.refreshStatus,
+        warning: snapshotEnvelope.warning,
+      },
+    };
   } catch (error) {
     console.error("[metricsService] fetchStudentMetrics:error", error);
     throw new Error("Unable to load student metrics");

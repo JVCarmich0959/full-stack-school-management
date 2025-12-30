@@ -1,9 +1,8 @@
 "use client";
 
-import { Suspense } from "react";
-
 import MetricCard from "@/components/student/MetricCard";
 import SubjectRadarChart from "@/components/student/SubjectRadarChart";
+import FreshnessBanner from "@/components/FreshnessBanner";
 import { useStudentMetrics } from "@/lib/hooks/useStudentMetrics";
 
 const LoadingState = () => (
@@ -18,8 +17,16 @@ const EmptyState = ({ message }: { message: string }) => (
   </div>
 );
 
-const PerformanceDashboardContent = ({ studentId }: { studentId: string }) => {
-  const { data, error, isLoading } = useStudentMetrics(studentId);
+const PerformanceDashboard = ({ studentId }: { studentId: string }) => {
+  const {
+    data,
+    meta,
+    error,
+    isLoading,
+    isRefetching,
+    refreshNow,
+    isRefreshing,
+  } = useStudentMetrics(studentId);
 
   if (isLoading) {
     return <LoadingState />;
@@ -39,6 +46,18 @@ const PerformanceDashboardContent = ({ studentId }: { studentId: string }) => {
 
   return (
     <div className="space-y-4 rounded-3xl border border-[var(--color-border)] bg-[var(--color-card)] p-5">
+      <FreshnessBanner
+        meta={meta}
+        error={error}
+        storageKey={`performance-dashboard-${studentId}`}
+        onRefresh={refreshNow}
+        isRefreshing={isRefreshing}
+      />
+      {isRefetching && (
+        <p className="text-xs text-[color:var(--color-text-muted)]">
+          Revalidating performance data…
+        </p>
+      )}
       <div className="flex flex-wrap items-center justify-between gap-4">
         <div>
           <p className="text-[11px] uppercase tracking-[0.3em] text-[color:var(--color-text-muted)]">
@@ -99,9 +118,13 @@ const PerformanceDashboardContent = ({ studentId }: { studentId: string }) => {
 
       <SubjectRadarChart
         scores={{
-          math: data.subjects.find((s) => s.name.toLowerCase().includes("math"))?.studentScore,
-          ela: data.subjects.find((s) => s.name.toLowerCase().includes("ela"))?.studentScore,
-          science: data.subjects.find((s) => s.name.toLowerCase().includes("science"))?.studentScore,
+          math: data.subjects.find((s) => s.name.toLowerCase().includes("math"))
+            ?.studentScore,
+          ela: data.subjects.find((s) => s.name.toLowerCase().includes("ela"))
+            ?.studentScore,
+          science: data.subjects.find((s) =>
+            s.name.toLowerCase().includes("science")
+          )?.studentScore,
         }}
       />
 
@@ -123,11 +146,5 @@ const PerformanceDashboardContent = ({ studentId }: { studentId: string }) => {
     </div>
   );
 };
-
-const PerformanceDashboard = ({ studentId }: { studentId: string }) => (
-  <Suspense fallback={<LoadingState />}>
-    <PerformanceDashboardContent studentId={studentId} />
-  </Suspense>
-);
 
 export default PerformanceDashboard;

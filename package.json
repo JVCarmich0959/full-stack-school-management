@@ -6,12 +6,15 @@
     "dev": "next dev",
     "build": "prisma generate && next build",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "next lint",
+    "refresh:snapshots": "ts-node --compiler-options '{\"module\":\"CommonJS\"}' scripts/refresh-snapshots.ts",
+    "test:performance-helpers": "ts-node --compiler-options '{\"module\":\"CommonJS\"}' tests/performanceHelpers.test.ts"
   },
   "dependencies": {
     "@clerk/elements": "^0.14.6",
     "@clerk/nextjs": "^5.4.1",
     "@hookform/resolvers": "^3.9.0",
+    "@tanstack/react-query": "^5.90.12",
     "@types/react-big-calendar": "^1.8.9",
     "clsx": "^2.1.1",
     "csv-parse": "^6.1.0",

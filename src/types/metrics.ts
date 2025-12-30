@@ -1,3 +1,5 @@
+import type { SnapshotStatus } from "@prisma/client";
+
 export type SubjectMetric = {
   name: string;
   studentScore: number;
@@ -20,6 +22,11 @@ export type StudentMetrics = {
   mathFluency: number;
   subjects: SubjectMetric[];
   assessments: AssessmentMetric[];
+  snapshot?: {
+    ageSeconds: number;
+    refreshStatus: SnapshotStatus;
+    warning?: string;
+  };
 };
 
 export type ClassroomMetric = {

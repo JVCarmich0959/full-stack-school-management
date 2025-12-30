@@ -53,8 +53,62 @@ model Student {
   guardianEmail  String?
   guardianPhone  String?
   homeroom       String?
+  performanceSnapshot PerformanceSnapshot?
+  snapshotRefreshTasks SnapshotRefreshTask[]
 
   @@index([fullNameLower])
+}
+
+enum SnapshotStatus {
+  PENDING
+  READY
+  FAILED
+}
+
+enum SnapshotTaskStatus {
+  PENDING
+  PROCESSING
+  FAILED
+  DONE
+}
+
+model PerformanceSnapshot {
+  id                  String    @id @default(cuid())
+  studentId           String    @unique
+  student             Student   @relation(fields: [studentId], references: [id])
+  overallScore        Int
+  growthRate          Int
+  attendanceRate      Int
+  assignmentsCompleted Int
+  assignmentsTotal    Int
+  readingMinutes      Int
+  mathFluency         Int
+  subjectMetrics      Json
+  assessments         Json
+  version             Int       @default(1)
+  refreshStatus       SnapshotStatus @default(READY)
+  refreshLog          String?
+  updatedAt           DateTime  @updatedAt
+  createdAt           DateTime  @default(now())
+
+  @@index([refreshStatus])
+  @@index([updatedAt])
+}
+
+model SnapshotRefreshTask {
+  id         String              @id @default(cuid())
+  studentId  String
+  student    Student             @relation(fields: [studentId], references: [id])
+  status     SnapshotTaskStatus  @default(PENDING)
+  attempts   Int                 @default(0)
+  lastError  String?
+  scheduledAt DateTime           @default(now())
+  lockedAt   DateTime?
+  createdAt  DateTime            @default(now())
+  updatedAt  DateTime            @updatedAt
+
+  @@unique([studentId])
+  @@index([status, scheduledAt])
 }
 
 model Teacher {

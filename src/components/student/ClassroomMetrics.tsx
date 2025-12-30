@@ -1,8 +1,7 @@
 "use client";
 
-import { Suspense } from "react";
-
 import MetricCard from "@/components/student/MetricCard";
+import FreshnessBanner from "@/components/FreshnessBanner";
 import { useClassroomMetrics } from "@/lib/hooks/useClassroomMetrics";
 
 const LoadingState = () => (
@@ -17,8 +16,16 @@ const EmptyState = ({ message }: { message: string }) => (
   </div>
 );
 
-const ClassroomMetricsContent = ({ studentId }: { studentId: string }) => {
-  const { data, error, isLoading } = useClassroomMetrics({ studentId });
+const ClassroomMetrics = ({ studentId }: { studentId: string }) => {
+  const {
+    data,
+    meta,
+    error,
+    isLoading,
+    isRefetching,
+    refreshNow,
+    isRefreshing,
+  } = useClassroomMetrics({ studentId });
 
   if (isLoading) {
     return <LoadingState />;
@@ -34,6 +41,18 @@ const ClassroomMetricsContent = ({ studentId }: { studentId: string }) => {
 
   return (
     <div className="space-y-4 rounded-3xl border border-[var(--color-border)] bg-[var(--color-card)] p-5">
+      <FreshnessBanner
+        meta={meta}
+        error={error}
+        storageKey={`classroom-metrics-${studentId}`}
+        onRefresh={refreshNow}
+        isRefreshing={isRefreshing}
+      />
+      {isRefetching && (
+        <p className="text-xs text-[color:var(--color-text-muted)]">
+          Revalidating classroom metrics…
+        </p>
+      )}
       <div className="flex items-center justify-between">
         <div>
           <p className="text-[11px] uppercase tracking-[0.3em] text-[color:var(--color-text-muted)]">
@@ -80,11 +99,5 @@ const ClassroomMetricsContent = ({ studentId }: { studentId: string }) => {
     </div>
   );
 };
-
-const ClassroomMetrics = ({ studentId }: { studentId: string }) => (
-  <Suspense fallback={<LoadingState />}>
-    <ClassroomMetricsContent studentId={studentId} />
-  </Suspense>
-);
 
 export default ClassroomMetrics;

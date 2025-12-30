@@ -28,7 +28,7 @@ const normalizeGrade = (grade?: string | number): string => {
   return normalized;
 };
 
-const validateContact = (value?: string | null, type: "email" | "phone") => {
+const validateContact = (type: "email" | "phone", value?: string | null) => {
   if (!value) return null;
   if (type === "email") {
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -105,12 +105,12 @@ export const sanitizeStudentProfile = (
 
   const subjects = resolveSubjectScores(raw.subjectBenchmarks);
 
-  const email = validateContact(raw.contact?.email, "email");
+  const email = validateContact("email", raw.contact?.email);
   if (!email && raw.contact?.email) {
     warnings.push({ field: "contact.email", issue: "Invalid email" });
   }
 
-  const phone = validateContact(raw.contact?.phone, "phone");
+  const phone = validateContact("phone", raw.contact?.phone);
   if (!phone && raw.contact?.phone) {
     warnings.push({ field: "contact.phone", issue: "Invalid phone" });
   }

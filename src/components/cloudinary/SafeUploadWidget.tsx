@@ -1,7 +1,7 @@
 "use client";
 
 import dynamic from "next/dynamic";
-import type { ReactNode } from "react";
+import type { ReactElement } from "react";
 
 type UploadWidgetRenderProps = {
   open: () => void;
@@ -12,7 +12,7 @@ type SafeUploadWidgetProps = {
   options?: Record<string, unknown>;
   signatureEndpoint?: string;
   onSuccess?: (result: any, meta: { widget: any }) => void;
-  children: (props: UploadWidgetRenderProps) => ReactNode;
+  children: (props: UploadWidgetRenderProps) => ReactElement;
 };
 
 const isConfigured = Boolean(

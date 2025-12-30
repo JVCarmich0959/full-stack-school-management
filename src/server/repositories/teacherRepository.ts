@@ -29,9 +29,9 @@ export const buildTeacherWhere = (
 
   if (search) {
     where.OR = [
-      { name: { contains: search, mode: "insensitive" } },
-      { surname: { contains: search, mode: "insensitive" } },
-      { shortName: { contains: search, mode: "insensitive" } },
+      { name: { contains: search } },
+      { surname: { contains: search } },
+      { shortName: { contains: search } },
     ];
   }
 

@@ -3,9 +3,15 @@
 import dynamic from "next/dynamic";
 import { useEffect } from "react";
 import { toast } from "react-toastify";
+import { useQueryClient } from "@tanstack/react-query";
 
 import MetricCard from "@/components/student/MetricCard";
+import FreshnessBanner from "@/components/FreshnessBanner";
 import { useClassroomMetrics } from "@/lib/hooks/useClassroomMetrics";
+import {
+  fetchClassroomMetrics,
+  getClassroomMetricsQueryKey,
+} from "@/lib/api/classroomMetrics";
 import { normalizeScores } from "@/lib/utils/scoreNormalization";
 
 const LazyRadarChart = dynamic(
@@ -29,7 +35,18 @@ const TeacherDashboard = ({ teacherId }: TeacherDashboardProps) => {
     console.debug("[TeacherDashboard] mounted", { teacherId });
   }, [teacherId]);
 
-  const { data, error, isLoading } = useClassroomMetrics({ teacherId });
+  const { data, meta, error, isLoading } = useClassroomMetrics({ teacherId });
+  const queryClient = useQueryClient();
+
+  useEffect(() => {
+    if (!teacherId) return;
+    const options = { teacherId };
+    const queryKey = getClassroomMetricsQueryKey(options);
+    queryClient.prefetchQuery({
+      queryKey,
+      queryFn: () => fetchClassroomMetrics(options),
+    });
+  }, [teacherId, queryClient]);
 
   useEffect(() => {
     if (error) {
@@ -61,6 +78,16 @@ const TeacherDashboard = ({ teacherId }: TeacherDashboardProps) => {
 
   return (
     <div className="space-y-4 rounded-3xl border border-[var(--color-border)] bg-[var(--color-card)] p-5">
+      <FreshnessBanner
+        meta={meta}
+        error={error}
+        storageKey={`teacher-dashboard-${teacherId}`}
+      />
+      {meta && meta.queueDepth && (
+        <p className="text-xs text-[color:var(--color-text-muted)]">
+          There are currently {meta.queueDepth} refresh requests pending.
+        </p>
+      )}
       <div className="flex flex-wrap items-center justify-between gap-4">
         <div>
           <p className="text-[11px] uppercase tracking-[0.3em] text-[color:var(--color-text-muted)]">
