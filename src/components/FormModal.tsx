@@ -191,6 +191,11 @@ const FormModal = ({
     );
   };
 
+  const actionLabel =
+    type === "create" ? "Create" : type === "update" ? "Edit" : "Delete";
+  const tableLabel = `${table.charAt(0).toUpperCase()}${table.slice(1)}`;
+  const buttonLabel = `${actionLabel} ${tableLabel}`;
+
   return (
     <>
       <button
@@ -198,6 +203,8 @@ const FormModal = ({
           "flex items-center justify-center rounded-full transition focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--color-accent-secondary)]",
           trigger ? "px-3 py-2" : `${size} ${bgColor}`
         )}
+        aria-label={buttonLabel}
+        title={buttonLabel}
         onClick={() => setOpen(true)}
       >
         {trigger ?? <Image src={`/${type}.png`} alt="" width={16} height={16} />}

@@ -1,65 +1,45 @@
 import prisma from "@/lib/prisma";
 import type { Prisma } from "@prisma/client";
 
-import type { StudentFilters } from "../types/filters";
-
 export type StudentWithClass = Prisma.StudentGetPayload<{
-  include: { class: true };
+  include: {
+    class: {
+      include: {
+        grade: true;
+        lessons: {
+          include: { subject: true };
+        };
+      };
+    };
+    grade: true;
+  };
 }>;
 
-const buildStudentFilter = (
-  filters?: StudentFilters
-): Prisma.StudentWhereInput => {
-  if (!filters) return {};
-  const where: Prisma.StudentWhereInput = {};
-
-  if (typeof filters.grade === "number" && Number.isFinite(filters.grade)) {
-    where.gradeLevel = filters.grade;
-  }
-
-  if (filters.teacherId) {
-    where.class = {
-      lessons: {
-        some: {
-          teacherId: filters.teacherId,
-        },
-      },
-    };
-  }
-
-  return where;
-};
-
-export const buildStudentWhere = (
-  search?: string,
-  filters?: StudentFilters
-): Prisma.StudentWhereInput => {
-  const where: Prisma.StudentWhereInput = buildStudentFilter(filters);
-
-  if (search) {
-    where.OR = [
-      { name: { contains: search } },
-      { surname: { contains: search } },
-      { firstName: { contains: search } },
-      { lastName: { contains: search } },
-    ];
-  }
-
-  return where;
-};
-
 export const fetchStudents = (
-  where: Prisma.StudentWhereInput,
+  where: Prisma.StudentWhereInput | undefined,
   skip: number,
-  take: number
+  take: number,
+  orderBy: Prisma.StudentOrderByWithRelationInput[]
 ) =>
   prisma.student.findMany({
     where,
-    include: { class: true },
-    orderBy: { name: "asc" },
+    include: {
+      class: {
+        include: {
+          grade: true,
+          lessons: {
+            include: {
+              subject: true,
+            },
+          },
+        },
+      },
+      grade: true,
+    },
+    orderBy,
     skip,
     take,
   });
 
-export const countStudents = (where: Prisma.StudentWhereInput) =>
+export const countStudents = (where?: Prisma.StudentWhereInput) =>
   prisma.student.count({ where });
