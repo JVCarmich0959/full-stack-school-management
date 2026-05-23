@@ -1,34 +1,71 @@
-"use client";
+import Link from "next/link";
 
-const trendData = [
-  {
-    title: "Engagement",
-    description: "Average class engagement score across tracked subjects.",
-    value: 82,
-    delta: 6,
-    color: "bg-plPurpleLight",
-  },
-  {
-    title: "Wellbeing",
-    description: "Percentage of students with perfect weekly attendance.",
-    value: 71,
-    delta: -3,
-    color: "bg-plYellowLight",
-  },
-  {
-    title: "Finance",
-    description: "Tuition and fees collected against the monthly target.",
-    value: 89,
-    delta: 12,
-    color: "bg-plSkyLight",
-  },
-];
+import type { DashboardMetric } from "@/server/services/dashboardService";
+
+type ReportingInsightsProps = {
+  metrics: DashboardMetric[];
+};
+
+const colorMap: Record<string, string> = {
+  engagement: "bg-plPurpleLight",
+  attendance: "bg-plYellowLight",
+  completion: "bg-plSkyLight",
+};
+
+const formatLastUpdated = (value: string) =>
+  new Date(value).toLocaleTimeString(undefined, {
+    hour: "numeric",
+    minute: "2-digit",
+  });
+
+const TrendCard = ({ metric }: { metric: DashboardMetric }) => {
+  const deltaLabel =
+    metric.delta >= 0 ? `+${metric.delta}% vs prior window` : `${metric.delta}% vs prior window`;
+  return (
+    <div className="bg-white border border-gray-100 rounded-xl p-4 flex flex-col gap-3">
+      <div className="flex items-center justify-between">
+        <div>
+          <p className="text-xs uppercase tracking-wide text-gray-500">
+            {metric.title}
+          </p>
+          <h3 className="text-lg font-semibold text-gray-900">{metric.value}%</h3>
+        </div>
+        <div
+          className={`px-3 py-1 rounded-full text-xs font-medium ${
+            metric.delta >= 0
+              ? "bg-green-100 text-green-700"
+              : "bg-red-100 text-red-700"
+          }`}
+        >
+          {deltaLabel}
+        </div>
+      </div>
+      <div className="h-1.5 rounded-full overflow-hidden bg-gray-100">
+        <div
+          className={`${colorMap[metric.id] ?? "bg-plSkyLight"} h-full transition-all duration-500`}
+          style={{ width: `${Math.min(metric.value, 100)}%` }}
+        />
+      </div>
+      <div className="text-xs text-gray-500 flex flex-col gap-1">
+        <span>Window: {metric.window}</span>
+        <span>Updated {formatLastUpdated(metric.lastUpdated)}</span>
+      </div>
+      <details className="text-xs text-gray-500">
+        <summary className="cursor-pointer font-semibold text-[color:var(--color-text-primary)]">
+          How is this calculated?
+        </summary>
+        <p className="mt-1">Formula: {metric.formula}</p>
+        <p className="mt-1">Source: {metric.source}</p>
+      </details>
+    </div>
+  );
+};
 
 const CohortBreakdown = () => {
   const cohorts = [
-    { label: "Grade 8", growth: 4.2, pulse: "text-green-600" },
-    { label: "Grade 9", growth: 2.1, pulse: "text-green-600" },
-    { label: "Grade 10", growth: -1.3, pulse: "text-red-600" },
+    { label: "Kindergarten", growth: 2.4, pulse: "text-green-600" },
+    { label: "Grade 1", growth: 1.8, pulse: "text-green-600" },
+    { label: "Grade 2", growth: -0.6, pulse: "text-red-600" },
   ];
 
   return (
@@ -54,34 +91,32 @@ const CohortBreakdown = () => {
   );
 };
 
-const TrendCard = ({
-  title,
-  description,
-  value,
-  delta,
-  color,
-}: (typeof trendData)[number]) => (
-  <div className="bg-white border border-gray-100 rounded-xl p-4 flex flex-col gap-3">
-    <div className="flex items-center justify-between">
-      <div>
-        <p className="text-xs uppercase tracking-wide text-gray-500">{title}</p>
-        <h3 className="text-lg font-semibold text-gray-900">{value}%</h3>
-      </div>
-      <div className={`px-3 py-1 rounded-full text-xs font-medium ${delta >= 0 ? "bg-green-100 text-green-700" : "bg-red-100 text-red-700"}`}>
-        {delta >= 0 ? `+${delta}%` : `${delta}%`} vs last week
-      </div>
-    </div>
-    <div className="h-1.5 rounded-full overflow-hidden bg-gray-100">
-      <div
-        className={`${color} h-full transition-all duration-500`}
-        style={{ width: `${Math.min(value, 100)}%` }}
-      />
-    </div>
-    <p className="text-sm text-gray-600 leading-relaxed">{description}</p>
-  </div>
-);
+const ReportingInsights = ({ metrics }: ReportingInsightsProps) => {
+  const narrativeEntries = metrics
+  .filter((metric) => metric.value > 0)
+  .map((metric) => {
+    const deltaText =
+      metric.delta === 0
+        ? ""
+        : metric.delta > 0
+        ? ` up ${metric.delta}% vs the prior window`
+        : ` down ${Math.abs(metric.delta)}% vs the prior window`;
 
-const ReportingInsights = () => {
+    let text = `${metric.title} is ${metric.value}% for the ${metric.window}${deltaText}.`;
+    if (metric.id === "attendance") {
+      text = `Attendance stability sits at ${metric.value}% over the ${metric.window}${deltaText}.`;
+    } else if (metric.id === "engagement") {
+      text = `Engagement score is ${metric.value}% for the ${metric.window}${deltaText}.`;
+    } else if (metric.id === "completion") {
+      text = `Completion rate is ${metric.value}% month-to-date${deltaText}.`;
+    }
+
+    return {
+      metric,
+      text,
+    };
+  });
+
   return (
     <section className="bg-white border border-gray-100 rounded-2xl p-5 flex flex-col gap-4 shadow-sm">
       <header className="flex items-center justify-between gap-2">
@@ -98,30 +133,40 @@ const ReportingInsights = () => {
       </header>
 
       <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
-        {trendData.map((trend) => (
-          <TrendCard key={trend.title} {...trend} />
+        {metrics.map((metric) => (
+          <TrendCard key={metric.id} metric={metric} />
         ))}
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-[1.4fr,1fr] gap-4">
-        <div className="bg-gray-50 border border-dashed border-gray-200 rounded-xl p-4">
+        <div className="bg-gray-50 border border-dashed border-gray-200 rounded-xl p-4 flex flex-col gap-2">
           <div className="flex items-center justify-between">
             <h3 className="font-semibold text-gray-900">Report narrative</h3>
             <span className="text-xs text-gray-500">Live draft</span>
           </div>
-          <ul className="list-disc list-inside text-sm text-gray-700 mt-2 space-y-2">
-            <li>
-              Attendance stability remains above the 95% target despite seasonal
-              dips.
-            </li>
-            <li>
-              Teacher-led interventions improved engagement by 6% week-over-week
-              in STEM cohorts.
-            </li>
-            <li>
-              Finance collections closed 89% of the target with two weeks
-              remaining.
-            </li>
+          <p className="text-xs text-gray-500">
+            Draft text; verify before publishing.
+          </p>
+          <ul className="list-disc list-inside text-sm text-gray-700 mt-2 space-y-3">
+            {narrativeEntries.map(({ text, metric }) => (
+              <li key={metric.id}>
+                <p>{text}</p>
+                <p className="text-[11px] text-gray-500 mt-1">
+                  Based on:{" "}
+                  <Link
+                    href={metric.link}
+                    className="font-semibold text-[color:var(--color-accent-primary)]"
+                  >
+                    {metric.title} ({metric.window})
+                  </Link>
+                </p>
+              </li>
+            ))}
+            {narrativeEntries.length === 0 && (
+              <li className="text-[11px] text-gray-500">
+                Metrics are still warming up; refresh once data is available.
+              </li>
+            )}
           </ul>
         </div>
         <CohortBreakdown />

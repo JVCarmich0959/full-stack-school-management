@@ -27,8 +27,8 @@ export default function DashboardLayout({
         {/* Main content */}
         <div className="flex flex-1 flex-col bg-[var(--color-page-bg)]">
           <Navbar />
-          <main className="flex-1 overflow-y-auto px-4 pb-10 pt-4 sm:px-6 lg:px-10">
-            <div className="mx-auto flex w-full max-w-6xl flex-col gap-6">{children}</div>
+          <main className="flex-1 overflow-y-auto px-4 pb-10 pt-4 sm:px-6 lg:px-8">
+            <div className="mx-auto flex w-full min-w-0 flex-col gap-6">{children}</div>
           </main>
         </div>
       </div>

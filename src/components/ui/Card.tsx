@@ -26,7 +26,7 @@ export default function Card({
   return (
     <div
       className={clsx(
-        "rounded-3xl border border-[var(--color-border)] bg-[var(--color-card)] shadow-sm transition-shadow duration-200",
+        "rounded-3xl border border-[var(--color-border)] bg-[var(--color-card)] shadow-sm transition-shadow duration-200 min-w-0",
         interactive && "focus-within:ring-2 focus-within:ring-[var(--color-accent-secondary)] hover:shadow-lg/40",
         paddingMap[padding],
         className

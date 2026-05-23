@@ -1,16 +1,19 @@
 // app/(admin)/page.tsx
-import type { FC } from "react";
 import dynamic from "next/dynamic";
 import Link from "next/link";
 
 import Announcements from "@/components/Announcements";
 import DataExchangePanel from "@/components/DataExchangePanel";
+import DashboardTile from "@/components/DashboardTile";
 import EventCalendarContainer from "@/components/EventCalendarContainer";
 import NotificationsFeed from "@/components/NotificationsFeed";
 import ReportingInsights from "@/components/ReportingInsights";
-import UserCard from "@/components/UserCard";
 import Card from "@/components/ui/Card";
 import PageHeader from "@/components/ui/PageHeader";
+import {
+  getDashboardCounts,
+  getDashboardMetrics,
+} from "@/server/services/dashboardService";
 
 // Defer heavy charts to client, no SSR to prevent hydration mismatch
 const CountChartContainer = dynamic(
@@ -47,17 +50,21 @@ type AdminPageProps = {
 type NormalizedSearchParams = Record<string, string | undefined>;
 
 const normalizeSearchParams = (
-  params: AdminPageProps["searchParams"],
+  params: AdminPageProps["searchParams"]
 ): NormalizedSearchParams =>
   Object.fromEntries(
     Object.entries(params).map(([key, value]) => [
       key,
       Array.isArray(value) ? value[0] : value,
-    ]),
+    ])
   ) as NormalizedSearchParams;
 
-const AdminPage: FC<AdminPageProps> = ({ searchParams }) => {
+const AdminPage = async ({ searchParams }: AdminPageProps) => {
   const normalizedSearchParams = normalizeSearchParams(searchParams);
+  const [dashboard, metrics] = await Promise.all([
+    getDashboardCounts(),
+    getDashboardMetrics(),
+  ]);
 
   return (
     <main className="space-y-6" aria-labelledby="dashboard-title">
@@ -80,7 +87,7 @@ const AdminPage: FC<AdminPageProps> = ({ searchParams }) => {
               href="/list/teachers"
               className="rounded-full bg-[var(--color-accent-primary)] px-4 py-2 font-semibold text-[#271b70] shadow-sm transition hover:opacity-90"
             >
-              Invite teacher
+              View teachers
             </Link>
           </div>
         }
@@ -108,47 +115,48 @@ const AdminPage: FC<AdminPageProps> = ({ searchParams }) => {
                 View roster
               </Link>
             </div>
-            <div className="mt-6 grid grid-cols-2 gap-4 md:grid-cols-4">
-              <UserCard type="admin" />
-              <UserCard type="teacher" />
-              <UserCard type="student" />
-              <UserCard type="parent" />
+            <div className="mt-6 grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-4">
+              {dashboard.tiles.map((tile) => (
+                <DashboardTile key={tile.key} tile={tile} />
+              ))}
             </div>
           </Card>
 
-          <div className="grid gap-6 lg:grid-cols-3">
-            <Card className="lg:col-span-1 min-h-[clamp(280px,40vh,420px)]">
+          <div className="grid grid-cols-1 lg:grid-cols-[minmax(0,1fr)_minmax(0,1fr)] gap-6">
+            <Card className="lg:col-span-1 min-h-[clamp(280px,40vh,420px)] min-w-0">
               <CountChartContainer />
             </Card>
-            <Card className="lg:col-span-2 min-h-[clamp(280px,40vh,420px)]">
+            <Card className="lg:col-span-1 min-h-[clamp(280px,40vh,420px)] min-w-0">
               <AttendanceChartContainer />
             </Card>
           </div>
 
-          <Card className="min-h-[clamp(320px,45vh,520px)]">
+          <Card className="min-h-[clamp(320px,45vh,520px)] min-w-0">
             <FinanceChart />
           </Card>
 
-          <div className="grid lg:grid-cols-[1.5fr,1fr] gap-4">
-            <ReportingInsights />
-            <div className="grid gap-4 h-full">
-              <Card className="p-0">
+          <div className="grid grid-cols-1 xl:grid-cols-3 gap-4 min-w-0">
+            <div className="grid gap-4 min-w-0 xl:col-span-2">
+              <ReportingInsights metrics={metrics} />
+            </div>
+            <div className="grid gap-4 min-w-0">
+              <Card className="p-0 min-w-0">
                 <NotificationsFeed />
               </Card>
-              <Card className="p-0">
+              <Card className="p-0 min-w-0">
                 <DataExchangePanel />
               </Card>
             </div>
           </div>
         </section>
         <aside
-          className="flex flex-col gap-6"
+          className="flex flex-col gap-6 min-w-0"
           aria-label="Calendar and announcements"
         >
-          <Card padding="none" className="p-0">
+          <Card padding="none" className="p-0 min-w-0">
             <EventCalendarContainer searchParams={normalizedSearchParams} />
           </Card>
-          <Card>
+          <Card className="min-w-0">
             <Announcements />
           </Card>
         </aside>

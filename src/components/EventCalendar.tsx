@@ -78,6 +78,14 @@ const EventCalendar = ({
       value={value}
       tileContent={tileContent}
       className="event-calendar"
+      prev2Label="«"
+      prevLabel="‹"
+      nextLabel="›"
+      next2Label="»"
+      prev2AriaLabel="Previous year"
+      prevAriaLabel="Previous month"
+      nextAriaLabel="Next month"
+      next2AriaLabel="Next year"
     />
   );
 };
